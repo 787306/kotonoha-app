@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Ginza Restaurant Phone Reservation">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FEF7EC"/>
+      <stop offset="100%" stop-color="#F8E6CF"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7C299"/>
+      <stop offset="100%" stop-color="#CFA071"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#D7F3EF" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  
+      <!-- Smartphone Call UI on Left -->
+      <rect x="145" y="60" width="205" height="375" rx="28" fill="#1E293B" stroke="#3B5259" stroke-width="4"/>
+      <rect x="160" y="88" width="175" height="318" rx="16" fill="#F0FDFA"/>
+      <circle cx="247" cy="175" r="40" fill="#0D9488"/>
+      <text x="247" y="186" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="24" fill="#FFFFFF">寿司</text>
+      <text x="247" y="240" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="16" fill="#0F172A">銀座 予約中…</text>
+      <text x="247" y="264" text-anchor="middle" font-family="sans-serif" font-weight="600" font-size="13" fill="#0D9488">01:24</text>
+      <circle cx="247" cy="348" r="24" fill="#10B981"/>
+      <!-- Sound Waves -->
+      <path d="M368 180 Q395 210 368 240" fill="none" stroke="#0D9488" stroke-width="5" stroke-linecap="round"/>
+      <path d="M388 162 Q425 210 388 258" fill="none" stroke="#14B8A6" stroke-width="5" stroke-linecap="round"/>
+      <!-- Sushi Wooden Geta Board on Right -->
+      <rect x="445" y="295" width="255" height="28" rx="6" fill="url(#wood)" stroke="#3B5259" stroke-width="3"/>
+      <rect x="475" y="323" width="24" height="32" fill="#B58052" stroke="#3B5259" stroke-width="2.5"/>
+      <rect x="645" y="323" width="24" height="32" fill="#B58052" stroke="#3B5259" stroke-width="2.5"/>
+      <!-- Sushi Pieces -->
+      <rect x="475" y="268" width="60" height="27" rx="10" fill="#FFFFFF" stroke="#3B5259" stroke-width="2.2"/>
+      <path d="M470 272 Q505 245 540 272 Z" fill="#FB7185" stroke="#3B5259" stroke-width="2.2"/>
+      <rect x="550" y="268" width="60" height="27" rx="10" fill="#FFFFFF" stroke="#3B5259" stroke-width="2.2"/>
+      <path d="M545 272 Q580 245 615 272 Z" fill="#F97316" stroke="#3B5259" stroke-width="2.2"/>
+      <rect x="625" y="268" width="54" height="27" rx="8" fill="#FDE047" stroke="#3B5259" stroke-width="2.2"/>
+      <rect x="644" y="266" width="16" height="30" fill="#1E293B"/>
+      <!-- Reservation Calendar Badge -->
+      <rect x="485" y="90" width="180" height="120" rx="16" fill="#FFFFFF" stroke="#3B5259" stroke-width="3"/>
+      <rect x="485" y="90" width="180" height="34" rx="14" fill="#EA580C"/>
+      <text x="575" y="113" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="15" fill="#FFFFFF">RESERVATION</text>
+      <text x="575" y="162" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="28" fill="#0F172A">19:00</text>
+      <text x="575" y="190" text-anchor="middle" font-family="sans-serif" font-weight="600" font-size="15" fill="#0D9488">2名様 · カウンター</text>
+    
+</svg>

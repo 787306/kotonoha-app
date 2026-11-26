@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Japanese Business Office">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EBF4F8"/>
+      <stop offset="100%" stop-color="#D7E8F0"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7C299"/>
+      <stop offset="100%" stop-color="#CFA071"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#D7F3EF" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  
+      <!-- Large Office Window with Tokyo Skyline -->
+      <rect x="75" y="45" width="650" height="250" rx="16" fill="#CFEBF5" stroke="#3B5259" stroke-width="3.5"/>
+      <rect x="130" y="140" width="70" height="155" fill="#94B8C9"/>
+      <rect x="220" y="105" width="88" height="190" fill="#7EA7BA"/>
+      <rect x="330" y="150" width="65" height="145" fill="#94B8C9"/>
+      <rect x="510" y="95" width="95" height="200" fill="#7EA7BA"/>
+      <rect x="625" y="145" width="65" height="150" fill="#94B8C9"/>
+      <!-- Office Desk -->
+      <rect x="0" y="310" width="800" height="190" fill="url(#wood)" stroke="#3B5259" stroke-width="3"/>
+      <!-- Laptop -->
+      <rect x="235" y="175" width="260" height="165" rx="12" fill="#334155" stroke="#3B5259" stroke-width="3"/>
+      <rect x="249" y="189" width="232" height="137" rx="6" fill="#FFFFFF"/>
+      <rect x="268" y="210" width="90" height="14" rx="4" fill="#0D9488"/>
+      <rect x="268" y="238" width="190" height="10" rx="4" fill="#CBD5E1"/>
+      <rect x="268" y="258" width="155" height="10" rx="4" fill="#CBD5E1"/>
+      <rect x="268" y="280" width="75" height="26" rx="6" fill="#E0F2FE"/>
+      <rect x="355" y="280" width="95" height="26" rx="6" fill="#CCFBF1"/>
+      <polygon points="205,340 525,340 550,364 180,364" fill="#CBD5E1" stroke="#3B5259" stroke-width="3"/>
+      <!-- Coffee Mug & Notebook -->
+      <rect x="580" y="318" width="52" height="58" rx="10" fill="#FFFFFF" stroke="#3B5259" stroke-width="2.5"/>
+      <path d="M632 332 H648 A10 10 0 0 1 648 360 H632" fill="none" stroke="#3B5259" stroke-width="3"/>
+      <rect x="85" y="330" width="105" height="75" rx="8" fill="#FEF9C3" stroke="#3B5259" stroke-width="2.5"/>
+      <text x="137" y="373" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="16" fill="#0F766E">報・連・相</text>
+    
+</svg>

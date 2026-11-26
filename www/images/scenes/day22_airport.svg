@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Airport Check-in">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E0F2FE"/>
+      <stop offset="100%" stop-color="#BAE6FD"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7C299"/>
+      <stop offset="100%" stop-color="#CFA071"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#D7F3EF" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  
+      <!-- Airport Terminal Window & Airplane -->
+      <rect x="55" y="40" width="690" height="250" rx="16" fill="#E0F7FA" stroke="#3B5259" stroke-width="3.5"/>
+      <!-- Airplane taking off -->
+      <g transform="rotate(-12 480 140)">
+        <ellipse cx="480" cy="145" rx="125" ry="24" fill="#FFFFFF" stroke="#3B5259" stroke-width="3"/>
+        <polygon points="455,135 515,82 545,82 510,135" fill="#0D9488" stroke="#3B5259" stroke-width="2.5"/>
+        <polygon points="365,135 340,102 368,102 395,135" fill="#0D9488" stroke="#3B5259" stroke-width="2.5"/>
+      </g>
+      <!-- Terminal Floor -->
+      <rect x="0" y="340" width="800" height="160" fill="#E2E8F0"/>
+      <!-- Rolling Suitcase -->
+      <rect x="135" y="215" width="135" height="180" rx="20" fill="#0D9488" stroke="#3B5259" stroke-width="3.5"/>
+      <rect x="178" y="145" width="48" height="70" rx="8" fill="none" stroke="#3B5259" stroke-width="6"/>
+      <line x1="168" y1="242" x2="168" y2="365" stroke="#5EEAD4" stroke-width="5" stroke-linecap="round"/>
+      <line x1="202" y1="242" x2="202" y2="365" stroke="#5EEAD4" stroke-width="5" stroke-linecap="round"/>
+      <line x1="236" y1="242" x2="236" y2="365" stroke="#5EEAD4" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="165" cy="405" r="14" fill="#1E293B"/>
+      <circle cx="240" cy="405" r="14" fill="#1E293B"/>
+      <!-- Boarding Pass & Passport -->
+      <rect x="360" y="245" width="265" height="120" rx="14" fill="#FFFFFF" stroke="#3B5259" stroke-width="3"/>
+      <rect x="360" y="245" width="265" height="32" rx="12" fill="#0284C7"/>
+      <text x="492" y="267" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="15" fill="#FFFFFF">BOARDING PASS · HND → ICN</text>
+      <text x="492" y="318" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="24" fill="#0F172A">GATE 108 · 12A</text>
+      <text x="492" y="346" text-anchor="middle" font-family="sans-serif" font-weight="600" font-size="13" fill="#0D9488">CHECK-IN COMPLETED ✓</text>
+    
+</svg>

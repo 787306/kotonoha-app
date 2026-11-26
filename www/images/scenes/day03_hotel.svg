@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Hakone Onsen Ryokan">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FDF7EE"/>
+      <stop offset="100%" stop-color="#F5E8D5"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7C299"/>
+      <stop offset="100%" stop-color="#CFA071"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#D7F3EF" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  
+      <!-- Shoji Window opening to Mt Fuji & Bamboo -->
+      <rect x="130" y="50" width="540" height="270" rx="10" fill="#DFF2F6" stroke="#3B5259" stroke-width="3.5"/>
+      <!-- Distant mountains & Mt Fuji -->
+      <path d="M130 270 L280 175 L410 270 Z" fill="#9AC7C2"/>
+      <path d="M350 270 L500 115 L650 270 Z" fill="#6E9FB5"/>
+      <path d="M460 156 L500 115 L540 156 L520 148 L500 160 L480 148 Z" fill="#FFFFFF"/>
+      <!-- Soft clouds & sun -->
+      <circle cx="245" cy="115" r="28" fill="#FDE68A"/>
+      <!-- Onsen steam wisps -->
+      <path d="M210 295 Q200 265 215 245 Q230 225 215 205" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" opacity="0.8"/>
+      <path d="M250 300 Q240 270 255 250 Q270 230 255 210" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" opacity="0.75"/>
+      <!-- Shoji sliding screen panels left/right -->
+      <rect x="130" y="50" width="90" height="270" fill="#FFFDF8" stroke="#3B5259" stroke-width="3"/>
+      <line x1="175" y1="50" x2="175" y2="320" stroke="#CBD5E1" stroke-width="2"/>
+      <line x1="130" y1="115" x2="220" y2="115" stroke="#CBD5E1" stroke-width="2"/>
+      <line x1="130" y1="185" x2="220" y2="185" stroke="#CBD5E1" stroke-width="2"/>
+      <line x1="130" y1="255" x2="220" y2="255" stroke="#CBD5E1" stroke-width="2"/>
+      <rect x="580" y="50" width="90" height="270" fill="#FFFDF8" stroke="#3B5259" stroke-width="3"/>
+      <line x1="625" y1="50" x2="625" y2="320" stroke="#CBD5E1" stroke-width="2"/>
+      <line x1="580" y1="115" x2="670" y2="115" stroke="#CBD5E1" stroke-width="2"/>
+      <line x1="580" y1="185" x2="670" y2="185" stroke="#CBD5E1" stroke-width="2"/>
+      <line x1="580" y1="255" x2="670" y2="255" stroke="#CBD5E1" stroke-width="2"/>
+      <!-- Tatami floor -->
+      <rect x="0" y="320" width="800" height="180" fill="#D9D79E"/>
+      <line x1="0" y1="320" x2="800" y2="320" stroke="#3B5259" stroke-width="3"/>
+      <line x1="0" y1="410" x2="800" y2="410" stroke="#5B6E58" stroke-width="8"/>
+      <line x1="400" y1="320" x2="400" y2="410" stroke="#5B6E58" stroke-width="8"/>
+      <!-- Low Chabudai table & green tea set -->
+      <rect x="260" y="352" width="280" height="24" rx="6" fill="url(#wood)" stroke="#3B5259" stroke-width="2.5"/>
+      <rect x="282" y="376" width="16" height="58" rx="4" fill="#B58052" stroke="#3B5259" stroke-width="2.5"/>
+      <rect x="502" y="376" width="16" height="58" rx="4" fill="#B58052" stroke="#3B5259" stroke-width="2.5"/>
+      <!-- Teapot & cups -->
+      <ellipse cx="365" cy="342" rx="28" ry="18" fill="#52796F" stroke="#3B5259" stroke-width="2.2"/>
+      <path d="M350 328 Q365 304 380 328" fill="none" stroke="#3B5259" stroke-width="3"/>
+      <rect x="425" y="330" width="24" height="22" rx="5" fill="#F8FAFC" stroke="#3B5259" stroke-width="2"/>
+      <rect x="462" y="330" width="24" height="22" rx="5" fill="#F8FAFC" stroke="#3B5259" stroke-width="2"/>
+      <!-- Onsen emblem lantern -->
+      <circle cx="90" cy="125" r="34" fill="#FFF7ED" stroke="#EA580C" stroke-width="2.5"/>
+      <text x="90" y="137" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="30" fill="#EA580C">♨</text>
+    
+</svg>

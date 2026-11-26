@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Japanese Post Office and Parcel">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF5F5"/>
+      <stop offset="100%" stop-color="#FDE8E8"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7C299"/>
+      <stop offset="100%" stop-color="#CFA071"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#D7F3EF" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  
+      <!-- Floor -->
+      <rect x="0" y="365" width="800" height="135" fill="#E2E8F0"/>
+      <!-- Japanese Red Postbox -->
+      <rect x="115" y="125" width="165" height="200" rx="22" fill="#DC2626" stroke="#3B5259" stroke-width="3.5"/>
+      <rect x="175" y="325" width="45" height="65" fill="#991B1B" stroke="#3B5259" stroke-width="3"/>
+      <rect x="142" y="158" width="110" height="16" rx="5" fill="#1E293B"/>
+      <!-- Japanese Postal Mark 〒 -->
+      <text x="197" y="258" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="68" fill="#FFFFFF">〒</text>
+      <!-- EMS Parcel Box -->
+      <rect x="355" y="210" width="230" height="175" rx="10" fill="url(#wood)" stroke="#3B5259" stroke-width="3.5"/>
+      <rect x="445" y="210" width="50" height="175" fill="#FDE68A" opacity="0.8"/>
+      <rect x="378" y="235" width="115" height="66" rx="6" fill="#FFFFFF" stroke="#3B5259" stroke-width="2"/>
+      <text x="435" y="262" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="18" fill="#DC2626">EMS</text>
+      <text x="435" y="286" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="13" fill="#475569">国際スピード郵便</text>
+      <!-- Redelivery Slip -->
+      <rect x="575" y="105" width="165" height="145" rx="14" fill="#FFFFFF" stroke="#0D9488" stroke-width="3"/>
+      <rect x="575" y="105" width="165" height="34" rx="12" fill="#0D9488"/>
+      <text x="657" y="128" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="15" fill="#FFFFFF">ご不在連絡票</text>
+      <line x1="600" y1="168" x2="715" y2="168" stroke="#94A3B8" stroke-width="4" stroke-linecap="round"/>
+      <line x1="600" y1="194" x2="695" y2="194" stroke="#94A3B8" stroke-width="4" stroke-linecap="round"/>
+      <text x="657" y="230" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="14" fill="#0F766E">再配達 19:00〜21:00</text>
+    
+</svg>

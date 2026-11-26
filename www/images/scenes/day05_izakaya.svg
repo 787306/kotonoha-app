@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Shibuya Izakaya">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#29324A"/>
+      <stop offset="100%" stop-color="#3D4463"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7C299"/>
+      <stop offset="100%" stop-color="#CFA071"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#D7F3EF" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  
+      <!-- Warm wooden Izakaya counter & noren -->
+      <rect x="0" y="305" width="800" height="195" fill="url(#wood)" stroke="#3B5259" stroke-width="3"/>
+      <!-- Noren curtains at top -->
+      <rect x="80" y="0" width="120" height="110" rx="6" fill="#1E3A5F" stroke="#F8FAFC" stroke-width="2"/>
+      <rect x="215" y="0" width="120" height="110" rx="6" fill="#1E3A5F" stroke="#F8FAFC" stroke-width="2"/>
+      <rect x="350" y="0" width="120" height="110" rx="6" fill="#1E3A5F" stroke="#F8FAFC" stroke-width="2"/>
+      <text x="275" y="72" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="38" fill="#F8FAFC">酒</text>
+      <!-- Glowing Red Chochin Lanterns -->
+      <line x1="590" y1="0" x2="590" y2="55" stroke="#F8FAFC" stroke-width="3"/>
+      <ellipse cx="590" cy="122" rx="46" ry="64" fill="#EF4444" stroke="#7F1D1D" stroke-width="3"/>
+      <ellipse cx="590" cy="122" rx="46" ry="20" fill="none" stroke="#991B1B" stroke-width="2"/>
+      <rect x="568" y="54" width="44" height="12" rx="3" fill="#1E293B"/>
+      <rect x="568" y="180" width="44" height="12" rx="3" fill="#1E293B"/>
+      <text x="590" y="134" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="28" fill="#FEF3C7">呑</text>
+      <line x1="705" y1="0" x2="705" y2="75" stroke="#F8FAFC" stroke-width="3"/>
+      <ellipse cx="705" cy="135" rx="38" ry="54" fill="#F97316" stroke="#7C2D12" stroke-width="3"/>
+      <rect x="687" y="78" width="36" height="10" rx="3" fill="#1E293B"/>
+      <rect x="687" y="185" width="36" height="10" rx="3" fill="#1E293B"/>
+      <!-- Two Draft Beer Mugs (Nama Biru) -->
+      <rect x="190" y="218" width="74" height="108" rx="10" fill="#FBBF24" stroke="#3B5259" stroke-width="3"/>
+      <rect x="190" y="210" width="74" height="30" rx="10" fill="#FFFFFF" stroke="#3B5259" stroke-width="2.5"/>
+      <path d="M264 242 H284 A12 12 0 0 1 284 294 H264" fill="none" stroke="#F8FAFC" stroke-width="8"/>
+      <rect x="305" y="228" width="74" height="98" rx="10" fill="#F59E0B" stroke="#3B5259" stroke-width="3"/>
+      <rect x="305" y="220" width="74" height="28" rx="10" fill="#FFFFFF" stroke="#3B5259" stroke-width="2.5"/>
+      <!-- Yakitori Plate -->
+      <ellipse cx="555" cy="375" rx="125" ry="42" fill="#F8FAFC" stroke="#3B5259" stroke-width="3"/>
+      <line x1="465" y1="365" x2="645" y2="365" stroke="#92400E" stroke-width="4"/>
+      <rect x="495" y="352" width="32" height="24" rx="8" fill="#B45309" stroke="#3B5259" stroke-width="2"/>
+      <rect x="535" y="354" width="22" height="20" rx="4" fill="#4ADE80" stroke="#3B5259" stroke-width="2"/>
+      <rect x="565" y="352" width="32" height="24" rx="8" fill="#B45309" stroke="#3B5259" stroke-width="2"/>
+      <line x1="475" y1="392" x2="635" y2="392" stroke="#92400E" stroke-width="4"/>
+      <rect x="505" y="380" width="30" height="22" rx="8" fill="#9A3412" stroke="#3B5259" stroke-width="2"/>
+      <rect x="545" y="380" width="30" height="22" rx="8" fill="#9A3412" stroke="#3B5259" stroke-width="2"/>
+    
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Tokyo Apartment Real Estate">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EAF7F6"/>
+      <stop offset="100%" stop-color="#D4ECEA"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7C299"/>
+      <stop offset="100%" stop-color="#CFA071"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#D7F3EF" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  
+      <!-- Real Estate Floorplan Card -->
+      <rect x="95" y="75" width="335" height="340" rx="20" fill="#FFFFFF" stroke="#3B5259" stroke-width="3"/>
+      <rect x="122" y="102" width="120" height="32" rx="8" fill="#0D9488"/>
+      <text x="182" y="124" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="16" fill="#FFFFFF">1LDK · 駅5分</text>
+      <!-- Simple floor plan diagram -->
+      <rect x="125" y="155" width="275" height="225" fill="#F8FAFC" stroke="#3B5259" stroke-width="3"/>
+      <line x1="255" y1="155" x2="255" y2="380" stroke="#3B5259" stroke-width="3"/>
+      <line x1="125" y1="265" x2="255" y2="265" stroke="#3B5259" stroke-width="3"/>
+      <text x="190" y="218" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="18" fill="#475569">洋室 6帖</text>
+      <text x="190" y="330" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="16" fill="#0D9488">バス・トイレ別</text>
+      <text x="328" y="275" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="20" fill="#0F172A">LDK 10帖</text>
+      <!-- Apartment Building & Big Key on Right -->
+      <rect x="490" y="110" width="215" height="295" rx="14" fill="#FFFDF8" stroke="#3B5259" stroke-width="3"/>
+      <rect x="520" y="145" width="46" height="46" rx="6" fill="#BAE6FD" stroke="#3B5259" stroke-width="2"/>
+      <rect x="588" y="145" width="46" height="46" rx="6" fill="#BAE6FD" stroke="#3B5259" stroke-width="2"/>
+      <rect x="520" y="215" width="46" height="46" rx="6" fill="#BAE6FD" stroke="#3B5259" stroke-width="2"/>
+      <rect x="588" y="215" width="46" height="46" rx="6" fill="#FDE68A" stroke="#3B5259" stroke-width="2"/>
+      <rect x="560" y="315" width="75" height="90" rx="6" fill="#0D9488" stroke="#3B5259" stroke-width="2.5"/>
+      <!-- Golden House Key -->
+      <circle cx="485" cy="365" r="34" fill="#FBBF24" stroke="#3B5259" stroke-width="3"/>
+      <circle cx="485" cy="365" r="12" fill="#EAF7F6" stroke="#3B5259" stroke-width="2.5"/>
+      <rect x="518" y="357" width="88" height="16" rx="4" fill="#FBBF24" stroke="#3B5259" stroke-width="2.5"/>
+      <rect x="572" y="373" width="12" height="18" fill="#FBBF24" stroke="#3B5259" stroke-width="2"/>
+      <rect x="592" y="373" width="12" height="14" fill="#FBBF24" stroke="#3B5259" stroke-width="2"/>
+    
+</svg>

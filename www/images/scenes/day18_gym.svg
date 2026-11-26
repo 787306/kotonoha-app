@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Fitness Gym">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EEF6FC"/>
+      <stop offset="100%" stop-color="#DCEBF7"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7C299"/>
+      <stop offset="100%" stop-color="#CFA071"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#D7F3EF" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  
+      <!-- Gym Floor & Window -->
+      <rect x="0" y="360" width="800" height="140" fill="#CBD5E1"/>
+      <rect x="70" y="45" width="660" height="225" rx="16" fill="#E0F2FE" stroke="#3B5259" stroke-width="3"/>
+      <!-- Treadmill -->
+      <path d="M135 370 L395 370 L375 342 L155 342 Z" fill="#334155" stroke="#3B5259" stroke-width="3"/>
+      <line x1="365" y1="342" x2="405" y2="175" stroke="#3B5259" stroke-width="10" stroke-linecap="round"/>
+      <rect x="355" y="152" width="90" height="44" rx="10" fill="#0F172A" stroke="#3B5259" stroke-width="2.5"/>
+      <text x="400" y="180" text-anchor="middle" font-family="monospace" font-weight="800" font-size="16" fill="#34D399">8.5 km</text>
+      <!-- Dumbbells -->
+      <g transform="translate(500,320)">
+        <rect x="35" y="18" width="110" height="14" rx="4" fill="#94A3B8" stroke="#3B5259" stroke-width="2.5"/>
+        <rect x="10" y="0" width="28" height="50" rx="6" fill="#0D9488" stroke="#3B5259" stroke-width="2.5"/>
+        <rect x="142" y="0" width="28" height="50" rx="6" fill="#0D9488" stroke="#3B5259" stroke-width="2.5"/>
+      </g>
+      <!-- Water Bottle & Towel -->
+      <rect x="520" y="185" width="48" height="108" rx="14" fill="#38BDF8" stroke="#3B5259" stroke-width="2.5"/>
+      <rect x="530" y="168" width="28" height="18" rx="4" fill="#0F172A"/>
+      <rect x="605" y="220" width="95" height="72" rx="12" fill="#FEF3C7" stroke="#3B5259" stroke-width="2.5"/>
+    
+</svg>

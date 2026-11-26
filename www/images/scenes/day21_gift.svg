@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Department Store Gift Wrapping">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF5F7"/>
+      <stop offset="100%" stop-color="#FDE7EE"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7C299"/>
+      <stop offset="100%" stop-color="#CFA071"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#D7F3EF" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  
+      <!-- Display Counter -->
+      <rect x="0" y="355" width="800" height="145" fill="#F3E8E2"/>
+      <line x1="0" y1="355" x2="800" y2="355" stroke="#3B5259" stroke-width="2.5"/>
+      <!-- Main Japanese Gift Box with Mizuhiki Ribbon -->
+      <rect x="200" y="175" width="250" height="205" rx="14" fill="#FFFFFF" stroke="#3B5259" stroke-width="3.5"/>
+      <rect x="190" y="155" width="270" height="42" rx="10" fill="#FDF2F8" stroke="#3B5259" stroke-width="3"/>
+      <rect x="308" y="155" width="34" height="225" fill="#F43F5E"/>
+      <rect x="200" y="258" width="250" height="32" fill="#F43F5E"/>
+      <!-- Ribbon Bow -->
+      <ellipse cx="290" cy="136" rx="36" ry="22" fill="#FB7185" stroke="#3B5259" stroke-width="2.5" transform="rotate(-20 290 136)"/>
+      <ellipse cx="360" cy="136" rx="36" ry="22" fill="#FB7185" stroke="#3B5259" stroke-width="2.5" transform="rotate(20 360 136)"/>
+      <circle cx="325" cy="150" r="14" fill="#E11D48"/>
+      <!-- Secondary Souvenir Bag -->
+      <rect x="500" y="205" width="150" height="175" rx="12" fill="#0D9488" stroke="#3B5259" stroke-width="3"/>
+      <path d="M540 205 Q575 155 610 205" fill="none" stroke="#3B5259" stroke-width="5"/>
+      <text x="575" y="295" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="22" fill="#FEF3C7">お土産</text>
+      <text x="575" y="325" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="14" fill="#CCFBF1">GINZA GIFT</text>
+    
+</svg>
