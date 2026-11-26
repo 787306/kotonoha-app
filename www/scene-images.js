@@ -35,7 +35,8 @@
     meeting:     './images/scenes/day27_meeting.svg',
     dinner:      './images/scenes/day28_dinner.svg',
     apology:     './images/scenes/day29_apology.svg',
-    graduation:  './images/scenes/day30_graduation.svg'
+    glasses:     './images/scenes/day30_glasses.svg',
+    graduation:  './images/scenes/day31_graduation.svg'
   };
 
   let dbPromise = null;
@@ -268,7 +269,7 @@
     if (countEl) {
       countEl.textContent = customCache.size > 0
         ? `커스텀 적용 ${customCache.size} / ${list.length}개`
-        : `기본 30일 일러스트 적용 중`;
+        : `기본 ${list.length}일 일러스트 적용 중`;
     }
 
     grid.innerHTML = list.map((sc) => {
@@ -303,8 +304,8 @@
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div>
           <div class="flex flex-wrap items-center gap-2">
-            <h4 class="text-sm font-bold text-slate-900">에피소드별 상황 그림 관리 (Day 1 ~ Day 30)</h4>
-            <span id="scene-manager-custom-count" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700">기본 30일 일러스트 적용 중</span>
+            <h4 class="text-sm font-bold text-slate-900">에피소드별 상황 그림 관리 (Day 1 ~ Day 31)</h4>
+            <span id="scene-manager-custom-count" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700">기본 31일 일러스트 적용 중</span>
           </div>
           <p class="text-xs text-slate-500 mt-1">
             각 날짜(상황)마다 기본 일러스트가 자동 전환되며, 원하는 날짜의 그림을 내 사진·그림 파일로 자유롭게 바꿀 수 있습니다.
@@ -366,7 +367,7 @@
         return;
       }
       await clearAllCustomImages();
-      toast('30일 전체 에피소드를 기본 상황 일러스트로 복원했습니다!', 'info');
+      toast('전체 에피소드를 기본 상황 일러스트로 복원했습니다!', 'info');
     });
 
     renderSettingsManagerGrid();

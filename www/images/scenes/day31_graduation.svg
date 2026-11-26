@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="31 Day Graduation Tokyo Panorama">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FBCFE8"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E7C299"/>
+      <stop offset="100%" stop-color="#CFA071"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#D7F3EF" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  
+      <!-- Golden Sunset Horizon -->
+      <circle cx="400" cy="270" r="115" fill="#FDE68A" opacity="0.85"/>
+      <!-- Tokyo Skyline + Tower + Skytree -->
+      <rect x="0" y="335" width="800" height="165" fill="#0F766E"/>
+      <rect x="65" y="245" width="60" height="90" fill="#115E59"/>
+      <rect x="140" y="210" width="75" height="125" fill="#134E4A"/>
+      <polygon points="275,115 240,335 310,335" fill="#EA580C" stroke="#FFFFFF" stroke-width="2"/>
+      <polygon points="565,85 545,335 585,335" fill="#38BDF8" stroke="#FFFFFF" stroke-width="2"/>
+      <rect x="625" y="220" width="85" height="115" fill="#134E4A"/>
+      <!-- 31 Days Graduation Emblem Card -->
+      <circle cx="400" cy="220" r="92" fill="#FFFFFF" stroke="#F59E0B" stroke-width="6"/>
+      <text x="400" y="205" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="38" fill="#0D9488">31 DAYS</text>
+      <text x="400" y="242" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="22" fill="#D97706">卒業おめでとう!</text>
+      <text x="400" y="272" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="15" fill="#64748B">KOTONOHA MASTER</text>
+      <!-- Celebration Confetti & Sakura Petals -->
+      <circle cx="155" cy="115" r="10" fill="#F472B6"/>
+      <circle cx="660" cy="120" r="10" fill="#34D399"/>
+      <circle cx="215" cy="165" r="8" fill="#FBBF24"/>
+      <circle cx="620" cy="175" r="8" fill="#818CF8"/>
+    
+</svg>
