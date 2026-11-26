@@ -19,12 +19,13 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
-  deploy-ota:
+  build-ota:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -80,6 +81,16 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: www
+
+  deploy-ota:
+    needs: build-ota
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Wait for artifact indexing
+        run: sleep 10
 
       - name: Deploy to GitHub Pages (Live OTA with Azure Neural Audio)
         id: deployment
