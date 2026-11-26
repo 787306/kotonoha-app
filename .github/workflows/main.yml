@@ -54,6 +54,14 @@ jobs:
             mkdir -p www
             cp -f scene-images.js www/scene-images.js
           fi
+          if [ -f "vocab-expansion.js" ]; then
+            mkdir -p www
+            cp -f vocab-expansion.js www/vocab-expansion.js
+          fi
+          if [ -f "learning-memory.js" ]; then
+            mkdir -p www
+            cp -f learning-memory.js www/learning-memory.js
+          fi
           if [ -d "images/scenes" ]; then
             mkdir -p www/images
             cp -rf images/scenes www/images/
@@ -118,6 +126,14 @@ jobs:
           if [ -f "scene-images.js" ]; then
             mkdir -p www
             cp -f scene-images.js www/scene-images.js
+          fi
+          if [ -f "vocab-expansion.js" ]; then
+            mkdir -p www
+            cp -f vocab-expansion.js www/vocab-expansion.js
+          fi
+          if [ -f "learning-memory.js" ]; then
+            mkdir -p www
+            cp -f learning-memory.js www/learning-memory.js
           fi
           if [ -d "images/scenes" ]; then
             mkdir -p www/images
