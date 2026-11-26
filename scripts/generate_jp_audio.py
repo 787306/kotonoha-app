@@ -69,6 +69,17 @@ def collect_phrases(html_path: str):
                 add(rule["polite"].get("jp"), VOICE_FEMALE)
             if "casual" in rule:
                 add(rule["casual"].get("jp"), VOICE_FEMALE)
+    # Also collect expanded situation vocabulary from www/vocab-expansion.js if present
+    exp_path = os.path.join(os.path.dirname(html_path), "vocab-expansion.js")
+    if os.path.exists(exp_path):
+        exp_txt = open(exp_path, encoding="utf-8").read()
+        m_exp = re.search(r"window\.KOTONOHA_VOCAB_EXPANSION\s*=\s*(\{.*\});", exp_txt, re.S)
+        if m_exp:
+            exp_map = json.loads(m_exp.group(1))
+            for vlist in exp_map.values():
+                for v in vlist:
+                    add(v.get("word"), VOICE_FEMALE)
+                    add(v.get("exPlain"), VOICE_FEMALE)
     return items
 
 async def synthesize_all():
