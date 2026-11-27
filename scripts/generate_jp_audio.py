@@ -6,6 +6,15 @@ Microsoft Azure Neural Voices (ja-JP-NanamiNeural & ja-JP-KeitaNeural) via edge-
 """
 import asyncio, json, os, re, sys
 
+JP_TTS_PRONUNCIATION_FIXES = [('温め', 'あたため'), ('寒気', 'さむけ'), ('下道', 'したみち'), ('背筋', 'はいきん'), ('十八番', 'おはこ'), ('手水舎', 'ちょうずや'), ('映える', 'ばえる'), ('上座', 'かみざ'), ('下座', 'しもざ'), ('お冷', 'おひや'), ('老舗', 'しにせ'), ('目処', 'めど'), ('十分です', 'じゅうぶんです'), ('十分あり', 'じゅうぶんあり'), ('十分ほど', 'じゅっぷんほど'), ('十分以内', 'じゅっぷんいない'), ('十分前', 'じゅっぷんまえ'), ('あと十分', 'あとじゅっぷん'), ('辛いので', 'からいので'), ('辛いけど', 'からいけど'), ('辛めの', 'からめの'), ('空いて', 'あいて'), ('開いて', 'あいて'), ('中近両用', 'ちゅうきんりょうよう'), ('近々両用', 'きんきんりょうよう'), ('大盛り', 'おおもり'), ('お通し', 'おとおし'), ('日持ち', 'ひもち'), ('前髪', 'まえがみ'), ('二重に', 'にじゅうに')]
+
+def normalize_jp_tts(text: str) -> str:
+    out = str(text or '').strip()
+    for src, dst in JP_TTS_PRONUNCIATION_FIXES:
+        if src in out:
+            out = out.replace(src, dst)
+    return out
+
 VOICE_FEMALE = "ja-JP-NanamiNeural"
 VOICE_MALE = "ja-JP-KeitaNeural"
 
@@ -37,8 +46,34 @@ def collect_phrases(html_path: str):
         if k not in items:
             items[k] = (t, voice)
 
-    # Test sentence
+    # Test sentence & Free Talk built-in phrases (openings, quick replies, rescues, offline replies)
     add("こんにちは！今日も楽しく日本語を練習しましょう。", VOICE_FEMALE)
+    for ft_phrase in [
+        "こんにちは！何でも自由に話しましょう。今日はどんなお話をしますか？",
+        "やっほー！今日は何でも自由に話そうよ！最近何か面白いことあった？",
+        "なるほど、面白いですね！もう少し詳しく教えていただけますか？",
+        "へえ、面白いね！もっと詳しく教えてよ！",
+        "こんにちは！最近どうですか？",
+        "今日あったことを話したいです。",
+        "日本の旅行先でおすすめはありますか？",
+        "もう少しゆっくり話してください。",
+        "やあ！最近どう？",
+        "今日あったこと聞いてよ！",
+        "おすすめの日本グルメある？",
+        "もうちょっとゆっくり話してくれる？",
+        "もう少しゆっくり話していただけますか？",
+        "もう一度お願いできますか？",
+        "もう一回言ってくれる？",
+        "これは日本語で何と言いますか？",
+        "これって日本語でなんて言うの？",
+        "最近どうお過ごしですか？",
+        "最近どんな感じ？",
+        "別のテーマで話しましょうか？",
+        "別の話しようか！",
+        "面白いですね！もっと教えてください。",
+        "面白いね！もっと教えてよ！"
+    ]:
+        add(ft_phrase, VOICE_FEMALE)
 
     for v in extra:
         add(v.get("word"), VOICE_FEMALE)
@@ -80,6 +115,18 @@ def collect_phrases(html_path: str):
                 for v in vlist:
                     add(v.get("word"), VOICE_FEMALE)
                     add(v.get("exPlain"), VOICE_FEMALE)
+    # Also collect 3-set textbook dialogues from www/textbook-dialogues.js if present
+    tb_path = os.path.join(os.path.dirname(html_path), "textbook-dialogues.js")
+    if os.path.exists(tb_path):
+        tb_txt = open(tb_path, encoding="utf-8").read()
+        m_tb = re.search(r"window\.KOTONOHA_TEXTBOOK_DIALOGUES\s*=\s*(\{.*\});", tb_txt, re.S)
+        if m_tb:
+            tb_map = json.loads(m_tb.group(1))
+            for sets in tb_map.values():
+                for st in sets:
+                    for ln in st.get("lines", []):
+                        v_pick = VOICE_MALE if ln.get("speaker") == "나" else VOICE_FEMALE
+                        add(ln.get("plain"), v_pick)
     return items
 
 async def synthesize_all():
@@ -103,7 +150,7 @@ async def synthesize_all():
         async with sem:
             for attempt in range(3):
                 try:
-                    comm = edge_tts.Communicate(text, voice)
+                    comm = edge_tts.Communicate(normalize_jp_tts(text), voice)
                     await comm.save(out_file)
                     if os.path.exists(out_file) and os.path.getsize(out_file) > 200:
                         ok_count += 1
