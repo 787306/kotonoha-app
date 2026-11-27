@@ -1,6 +1,6 @@
 {
   "name": "kotonoha-japanese-app",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "코토노하 Kotonoha · 매일 12분 일본어 회화·듣기 앱 (PWA + Capacitor Android/iOS)",
   "private": true,
   "scripts": {
