@@ -1,8 +1,9 @@
-const CACHE_NAME = 'kotonoha-ko-ota-v11';
+const CACHE_NAME = 'kotonoha-ko-ota-v14';
 const ASSETS = [
   './',
   './index.html',
   './vocab-expansion.js',
+  './textbook-dialogues.js',
   './learning-memory.js',
   './scene-images.js',
   './ai-engine.js',

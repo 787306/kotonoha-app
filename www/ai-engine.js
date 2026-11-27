@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = 'v2.4.2 · 31일판(안경점 Day30·졸업 Day31) + 1,100어휘';
+  const APP_VERSION = 'v2.5.1 · 31일판(핸즈프리 통화·교재93세트·1,100어휘)';
   const VAULT_STORAGE_KEY = 'kotonoha_ai_vault_v1';
   const PREFS_STORAGE_KEY = 'kotonoha_prefs_v1';
   const REMINDER_NOTIF_ID = 20261125;
@@ -1193,6 +1193,10 @@
     muteBtn.className = isMuted
       ? 'px-3 py-2 rounded-xl bg-slate-200 text-slate-700 text-xs font-semibold transition'
       : 'px-3 py-2 rounded-xl bg-white border border-brand-200 text-brand-700 text-xs font-semibold transition';
+    const b = bridge();
+    if (b && b.syncFreeTalkLiveUI) {
+      b.syncFreeTalkLiveUI({ active: isLiveActive, muted: isMuted });
+    }
   }
 
   function handleLiveServerMsg(msg) {
@@ -1356,11 +1360,18 @@
       : '';
   }
 
-  async function sendToOpenAICompat(profile, userText) {
+  async function sendToOpenAICompat(profile, userText, onTurnComplete) {
     const b = bridge();
-    if (!b) return;
+    let doneFired = false;
+    const finishTurn = () => {
+      if (doneFired) return;
+      doneFired = true;
+      if (typeof onTurnComplete === 'function') onTurnComplete();
+    };
+    if (!b) { finishTurn(); return; }
     if (isCompatBusy) {
       toast('이전 AI 응답을 기다리는 중입니다…', 'info');
+      finishTurn();
       return;
     }
     isCompatBusy = true;
@@ -1414,7 +1425,9 @@
       b.appendAiTurn('ai', parsed.jp, parsed.ko || '(커스텀 AI 응답)', '');
       setLiveStatusUI('idle', `턴제 AI 연결됨 · ${usedProfile.name} (${usedProfile.model})`);
       if (st.autoTts && !st.commuteSilent && b.speakJapanese) {
-        b.speakJapanese(parsed.jp, 1.0, 1.05);
+        b.speakJapanese(parsed.jp, 1.0, 1.05, finishTurn);
+      } else {
+        setTimeout(finishTurn, 350);
       }
     } catch (err) {
       console.error('[KotonohaAI] OpenAI-compat error:', err);
@@ -1423,12 +1436,13 @@
       }
       setLiveStatusUI('idle', 'API 호출 오류 (네트워크/키/CORS 확인)');
       toast('커스텀 AI 호출 실패: ' + (err.message || 'CORS 또는 네트워크 오류'), 'error');
+      finishTurn();
     } finally {
       isCompatBusy = false;
     }
   }
 
-  function handleChatInput(text) {
+  function handleChatInput(text, onTurnComplete) {
     if (isLiveActive && isSetupComplete && ws && ws.readyState === WebSocket.OPEN) {
       const b = bridge();
       const lang = detectInputLang(text);
@@ -1438,11 +1452,12 @@
         if (ref && ref.id) enrichLiveTurnBilingual(ref.chatKey, ref.id, 'user', text);
       }
       ws.send(JSON.stringify({ realtimeInput: { text } }));
+      if (typeof onTurnComplete === 'function') onTurnComplete();
       return true;
     }
     const profile = getActiveProfile();
     if (profile && profile.type === 'openai-compat' && isProfileReady(profile)) {
-      sendToOpenAICompat(profile, text);
+      sendToOpenAICompat(profile, text, onTurnComplete);
       return true;
     }
     return false;
@@ -1714,6 +1729,10 @@
         'bg-slate-300';
       dot.className = 'w-2.5 h-2.5 rounded-full shrink-0 ' + color;
     }
+    const b = bridge();
+    if (b && b.syncFreeTalkLiveUI && isLiveActive) {
+      b.syncFreeTalkLiveUI({ active: isLiveActive, muted: isMuted, mode, status: text });
+    }
   }
 
   function updateLiveButtonsUI(active) {
@@ -1725,9 +1744,16 @@
         ? 'px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition'
         : 'px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition';
     }
+    if (toggleBtn && isFreeTalkMode()) {
+      toggleBtn.classList.add('hidden');
+    }
     if (muteBtn) {
-      muteBtn.classList.toggle('hidden', !active);
+      muteBtn.classList.toggle('hidden', !active || isFreeTalkMode());
       syncMuteButtonUI();
+    }
+    const b = bridge();
+    if (b && b.syncFreeTalkLiveUI) {
+      b.syncFreeTalkLiveUI({ active: !!active, muted: isMuted });
     }
   }
 
@@ -1775,6 +1801,7 @@
         if (gotoBtn) gotoBtn.addEventListener('click', () => openSettingsPage('security'));
       }
       if (!isLiveActive) setLiveStatusUI('idle', '내장 기본 모드 (오프라인 규칙 회화)');
+      if (b && b.syncFreeTalkLiveUI) b.syncFreeTalkLiveUI();
       return;
     }
 
@@ -1807,8 +1834,10 @@
     }
 
     const active = getActiveProfile();
+    const muteBtnTop = document.getElementById('btn-ai-live-mute');
     if (active && active.type === 'gemini-live') {
-      if (toggleBtn) toggleBtn.classList.remove('hidden');
+      if (toggleBtn) toggleBtn.classList.toggle('hidden', isFreeTalkMode());
+      if (muteBtnTop) muteBtnTop.classList.toggle('hidden', !isLiveActive || isFreeTalkMode());
       if (!isLiveActive) {
         const bkHint = (vaultData.backupApi && vaultData.backupApi.enabled && isBackupReady()) ? ' · 🛡️ 예비 API 자동 전환 대기' : '';
         setLiveStatusUI('idle', isProfileReady(active)
@@ -1817,14 +1846,17 @@
       }
     } else if (active && active.type === 'openai-compat') {
       if (toggleBtn) toggleBtn.classList.add('hidden');
+      if (muteBtnTop) muteBtnTop.classList.add('hidden');
       const bkTag = active.id === BACKUP_PROFILE_ID ? '🛡️ 예비 API 활성 · ' : '턴제 커스텀 AI 활성 · ';
       setLiveStatusUI('idle', isProfileReady(active)
         ? `${bkTag}${active.name} (${active.model})`
         : '⚠️ 오른쪽 [⚙️ API 설정] 버튼을 눌러 API 키/URL을 입력해 주세요');
     } else {
       if (toggleBtn) toggleBtn.classList.add('hidden');
+      if (muteBtnTop) muteBtnTop.classList.add('hidden');
       setLiveStatusUI('idle', '내장 기본 모드 (오프라인 규칙 회화)');
     }
+    if (b && b.syncFreeTalkLiveUI) b.syncFreeTalkLiveUI();
   }
 
   // ---------- Full-Screen Settings Hub & Sub-Page Routing ----------
@@ -1946,7 +1978,7 @@
       setBadge('hub-badge-voice', veMap[st.voiceEngine] || '자동', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
     }
 
-    setBadge('hub-badge-data', 'v2.4.2 · 백업/복원', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
+    setBadge('hub-badge-data', 'v2.5.1 · 백업/복원', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
   }
 
   // ---------- Vault Card & Backup Failover Card Rendering ----------
@@ -2384,6 +2416,8 @@
     document.getElementById('sp-ai-profile-select').addEventListener('change', async (e) => {
       if (!vaultUnlocked) return;
       stopLiveSession(true);
+      const b0 = bridge();
+      if (b0 && b0.stopFreeTalkHandsFree) b0.stopFreeTalkHandsFree(true);
       vaultData.activeProfileId = e.target.value;
       try { await persistVault(); } catch (err) {}
       renderAllAIViews();
@@ -2520,7 +2554,7 @@
             </div>
           </div>
           <div class="flex items-center gap-2 shrink-0">
-            <span id="hub-badge-data" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">v2.4.2</span>
+            <span id="hub-badge-data" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">v2.5.1</span>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
           </div>
         </button>
@@ -3276,6 +3310,7 @@
         stopLiveSession(false);
         toast('회화 모드가 변경되어 실시간 세션을 종료했습니다. 다시 시작해 주세요.', 'info');
       }
+      renderSpeakingBar();
     },
     onNavChange: (navId) => {
       if (navId === 'security') {
@@ -3298,7 +3333,35 @@
     generateScenarioVocabWithAI,
     handleChatInput,
     startLive: startLiveSession,
-    stopLive: () => stopLiveSession(false)
+    stopLive: () => stopLiveSession(false),
+    isLiveActive: () => isLiveActive,
+    isLiveMuted: () => isMuted,
+    toggleLiveMute: () => toggleMute(),
+    isGeminiLiveReady: () => {
+      const p = getActiveProfile();
+      return !!(vaultUnlocked && p && p.type === 'gemini-live' && isProfileReady(p));
+    },
+    getWhisperApiKey: () => {
+      if (!vaultUnlocked || !vaultData || !Array.isArray(vaultData.profiles)) return '';
+      const p = getActiveProfile();
+      if (p && p.type === 'openai-compat' && p.apiKey && /api\.openai\.com/i.test(p.baseUrl || '')) {
+        return p.apiKey.trim();
+      }
+      const anyOai = vaultData.profiles.find((x) => x.type === 'openai-compat' && x.apiKey && /api\.openai\.com/i.test(x.baseUrl || ''));
+      return anyOai ? anyOai.apiKey.trim() : '';
+    },
+    getEngineSummary: () => {
+      const p = getActiveProfile();
+      const unlocked = !!vaultUnlocked;
+      const ready = !!(unlocked && p && isProfileReady(p));
+      return {
+        type: p ? p.type : 'builtin',
+        name: p ? p.name : '내장 기본 모드',
+        liveReady: !!(ready && p && p.type === 'gemini-live'),
+        compatReady: !!(ready && p && p.type === 'openai-compat'),
+        unlocked
+      };
+    }
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
