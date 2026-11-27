@@ -43,27 +43,27 @@ jobs:
           if [ -d "kotonoha-mobile-app/scripts" ]; then
             cp -rf kotonoha-mobile-app/scripts ./scripts
           fi
-          if [ -f "index.html" ]; then
+          if [ ! -f "www/index.html" ] && [ -f "index.html" ]; then
             mkdir -p www
             cp -f index.html www/index.html
           fi
-          if [ -f "ai-engine.js" ]; then
+          if [ ! -f "www/ai-engine.js" ] && [ -f "ai-engine.js" ]; then
             mkdir -p www
             cp -f ai-engine.js www/ai-engine.js
           fi
-          if [ -f "scene-images.js" ]; then
+          if [ ! -f "www/scene-images.js" ] && [ -f "scene-images.js" ]; then
             mkdir -p www
             cp -f scene-images.js www/scene-images.js
           fi
-          if [ -f "vocab-expansion.js" ]; then
+          if [ ! -f "www/vocab-expansion.js" ] && [ -f "vocab-expansion.js" ]; then
             mkdir -p www
             cp -f vocab-expansion.js www/vocab-expansion.js
           fi
-          if [ -f "learning-memory.js" ]; then
+          if [ ! -f "www/learning-memory.js" ] && [ -f "learning-memory.js" ]; then
             mkdir -p www
             cp -f learning-memory.js www/learning-memory.js
           fi
-          if [ -f "textbook-dialogues.js" ]; then
+          if [ ! -f "www/textbook-dialogues.js" ] && [ -f "textbook-dialogues.js" ]; then
             mkdir -p www
             cp -f textbook-dialogues.js www/textbook-dialogues.js
           fi
@@ -71,7 +71,7 @@ jobs:
             mkdir -p www/images
             cp -rf images/scenes www/images/
           fi
-          if [ -f "generate_jp_audio.py" ]; then
+          if [ ! -f "scripts/generate_jp_audio.py" ] && [ -f "generate_jp_audio.py" ]; then
             mkdir -p scripts
             cp -f generate_jp_audio.py scripts/generate_jp_audio.py
           fi
@@ -130,27 +130,27 @@ jobs:
           if [ -f "kotonoha-mobile-app/package.json" ]; then
             cd kotonoha-mobile-app
           fi
-          if [ -f "index.html" ]; then
+          if [ ! -f "www/index.html" ] && [ -f "index.html" ]; then
             mkdir -p www
             cp -f index.html www/index.html
           fi
-          if [ -f "ai-engine.js" ]; then
+          if [ ! -f "www/ai-engine.js" ] && [ -f "ai-engine.js" ]; then
             mkdir -p www
             cp -f ai-engine.js www/ai-engine.js
           fi
-          if [ -f "scene-images.js" ]; then
+          if [ ! -f "www/scene-images.js" ] && [ -f "scene-images.js" ]; then
             mkdir -p www
             cp -f scene-images.js www/scene-images.js
           fi
-          if [ -f "vocab-expansion.js" ]; then
+          if [ ! -f "www/vocab-expansion.js" ] && [ -f "vocab-expansion.js" ]; then
             mkdir -p www
             cp -f vocab-expansion.js www/vocab-expansion.js
           fi
-          if [ -f "learning-memory.js" ]; then
+          if [ ! -f "www/learning-memory.js" ] && [ -f "learning-memory.js" ]; then
             mkdir -p www
             cp -f learning-memory.js www/learning-memory.js
           fi
-          if [ -f "textbook-dialogues.js" ]; then
+          if [ ! -f "www/textbook-dialogues.js" ] && [ -f "textbook-dialogues.js" ]; then
             mkdir -p www
             cp -f textbook-dialogues.js www/textbook-dialogues.js
           fi
@@ -158,7 +158,7 @@ jobs:
             mkdir -p www/images
             cp -rf images/scenes www/images/
           fi
-          if [ -f "generate_jp_audio.py" ]; then
+          if [ ! -f "scripts/generate_jp_audio.py" ] && [ -f "generate_jp_audio.py" ]; then
             mkdir -p scripts
             cp -f generate_jp_audio.py scripts/generate_jp_audio.py
           fi
