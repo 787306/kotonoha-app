@@ -63,6 +63,10 @@ jobs:
             mkdir -p www
             cp -f learning-memory.js www/learning-memory.js
           fi
+          if [ -f "textbook-dialogues.js" ]; then
+            mkdir -p www
+            cp -f textbook-dialogues.js www/textbook-dialogues.js
+          fi
           if [ -d "images/scenes" ]; then
             mkdir -p www/images
             cp -rf images/scenes www/images/
@@ -145,6 +149,10 @@ jobs:
           if [ -f "learning-memory.js" ]; then
             mkdir -p www
             cp -f learning-memory.js www/learning-memory.js
+          fi
+          if [ -f "textbook-dialogues.js" ]; then
+            mkdir -p www
+            cp -f textbook-dialogues.js www/textbook-dialogues.js
           fi
           if [ -d "images/scenes" ]; then
             mkdir -p www/images
