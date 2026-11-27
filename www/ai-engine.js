@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = 'v2.5.2 · 31일판(모바일최적화·8인파트너·핸즈프리)';
+  const APP_VERSION = 'v2.5.3 · 31일판(모바일최적화·8인파트너·핸즈프리)';
   const VAULT_STORAGE_KEY = 'kotonoha_ai_vault_v1';
   const PREFS_STORAGE_KEY = 'kotonoha_prefs_v1';
   const REMINDER_NOTIF_ID = 20261125;
@@ -1987,7 +1987,7 @@
       setBadge('hub-badge-voice', veMap[st.voiceEngine] || '자동', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
     }
 
-    setBadge('hub-badge-data', 'v2.5.2 · 백업/복원', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
+    setBadge('hub-badge-data', 'v2.5.3 · 백업/복원', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
   }
 
   // ---------- Vault Card & Backup Failover Card Rendering ----------
@@ -2349,15 +2349,15 @@
     bar.id = 'ai-engine-bar';
     bar.className = 'bg-brand-50/70 rounded-2xl border border-brand-200 p-3.5 space-y-2.5 shadow-xs';
     bar.innerHTML = `
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <div class="flex flex-wrap items-center gap-2 min-w-0 flex-1">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div class="flex items-center gap-2 w-full sm:flex-1 min-w-0">
           <span id="ai-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-300 shrink-0"></span>
-          <select id="sp-ai-profile-select" aria-label="회화 AI 엔진 선택" class="max-w-full px-2.5 py-1.5 rounded-xl bg-white border border-brand-200 text-xs font-bold text-slate-800">
+          <select id="sp-ai-profile-select" aria-label="회화 AI 엔진 선택" class="flex-1 min-w-0 max-w-full px-2.5 py-1.5 rounded-xl bg-white border border-brand-200 text-xs font-bold text-slate-800">
             <option value="builtin">내장 기본 모드 (오프라인 · 무료)</option>
           </select>
           <span id="sp-ai-pin-badge" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 shrink-0">📌 고정</span>
         </div>
-        <div class="flex flex-wrap items-center gap-1.5 shrink-0">
+        <div class="flex flex-wrap items-center gap-1.5 w-full sm:w-auto sm:shrink-0">
           <button type="button" id="btn-sp-swap-backup" title="예비 API로 즉시 전환" class="hidden px-2.5 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 hover:bg-amber-100 text-xs font-semibold transition">🛡️ 예비 전환</button>
           <button type="button" id="btn-sp-audio-drawer" title="이어폰 출력 및 마이크 장치 선택" class="px-2.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-brand-700 hover:border-brand-300 text-xs font-semibold transition">🎧 이어폰</button>
           <button type="button" id="btn-sp-open-ai-settings" class="px-2.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-brand-700 hover:border-brand-300 text-xs font-semibold transition">⚙️ API</button>
@@ -2563,7 +2563,7 @@
             </div>
           </div>
           <div class="flex items-center gap-1 sm:gap-2 shrink-0 max-w-[44%] sm:max-w-none">
-            <span id="hub-badge-data" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">v2.5.2</span>
+            <span id="hub-badge-data" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">v2.5.3</span>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
           </div>
         </button>
