@@ -1,12 +1,12 @@
-const CACHE_NAME = 'kotonoha-ko-ota-v16';
+const CACHE_NAME = 'kotonoha-ko-ota-v17';
 const ASSETS = [
   './',
   './index.html',
-  './vocab-expansion.js',
-  './textbook-dialogues.js',
-  './learning-memory.js',
-  './scene-images.js',
-  './ai-engine.js',
+  './vocab-expansion.js?v=2.5.4',
+  './textbook-dialogues.js?v=2.5.4',
+  './learning-memory.js?v=2.5.4',
+  './scene-images.js?v=2.5.4',
+  './ai-engine.js?v=2.5.4',
   './manifest.json',
   './images/scenes/day01_cafe.jpg'
 ];
@@ -25,7 +25,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Network-first strategy for same-origin GET assets only (never intercepts external AI API calls)
+// Network-first with HTTP cache revalidation for same-origin GET assets (never intercepts external AI API calls)
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   let url;
@@ -33,7 +33,7 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, { cache: 'no-cache' })
       .then((resp) => {
         if (resp && resp.ok && resp.status === 200) {
           const clone = resp.clone();

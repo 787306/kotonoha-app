@@ -785,6 +785,16 @@
             </div>
           </div>
 
+          <!-- Batch Chat Bubble Delete Toolbar (shown in Select Delete mode) -->
+          <div id="sp-chat-select-bar" class="hidden bg-rose-50 border border-rose-200 rounded-2xl px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 shadow-xs">
+            <span id="sp-chat-select-count" class="text-xs font-bold text-rose-800">삭제할 말풍선을 선택하세요 (0개)</span>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button type="button" id="btn-chat-select-all" class="px-2.5 py-1 rounded-lg bg-white border border-rose-200 text-rose-700 text-[11px] font-semibold hover:bg-rose-100 transition">전체 선택</button>
+              <button type="button" id="btn-chat-delete-selected" disabled class="px-3 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 disabled:opacity-40 text-white text-[11px] font-bold transition">선택 삭제</button>
+              <button type="button" id="btn-chat-select-cancel" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-600 text-[11px] font-semibold hover:bg-slate-50 transition">취소</button>
+            </div>
+          </div>
+
           <div id="chat-messages" class="bg-white rounded-3xl border border-surface-border p-4 sm:p-5 h-[360px] overflow-y-auto custom-scroll space-y-4 shadow-sm"></div>
 
           <!-- Korean -> Natural Japanese Rescue Drawer -->
@@ -855,7 +865,12 @@
             </div>
 
             <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-              <button type="button" id="btn-reset-chat" class="text-xs text-slate-400 hover:text-slate-700">대화 처음부터 다시하기</button>
+              <div class="flex flex-wrap items-center gap-3">
+                <button type="button" id="btn-reset-chat" class="text-xs text-slate-400 hover:text-slate-700">대화 처음부터 다시하기</button>
+                <button type="button" id="btn-toggle-select-del" class="text-xs font-semibold text-slate-500 hover:text-rose-600 inline-flex items-center gap-1 transition">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> 선택 삭제
+                </button>
+              </div>
               <button type="button" id="btn-generate-review" class="text-xs font-semibold text-brand-700 hover:text-brand-800 inline-flex items-center gap-1">
                 <i data-lucide="file-check-2" class="w-3.5 h-3.5"></i> 대화 종료 및 원어민 표현 교정 리포트 보기
               </button>
@@ -985,7 +1000,7 @@
               <div>
                 <div class="flex items-center gap-2">
                   <h4 class="text-sm font-bold text-slate-900">인앱 실시간 업데이트 (OTA)</h4>
-                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700">v2.5.3 · 31일판</span>
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700">v2.5.4 · 31일판</span>
                 </div>
                 <p class="text-xs text-slate-500 mt-0.5">APK 재설치 없이 GitHub 최신 수정 사항을 앱 안에서 바로 반영합니다.</p>
               </div>
@@ -1132,8 +1147,8 @@
     </nav>
   </div>
 
-  <script src="./vocab-expansion.js"></script>
-  <script src="./textbook-dialogues.js"></script>
+  <script src="./vocab-expansion.js?v=2.5.4"></script>
+  <script src="./textbook-dialogues.js?v=2.5.4"></script>
   <script>
     (function () {
       'use strict';
@@ -1302,15 +1317,37 @@
         return [...scFiltered, ...rest].slice(0, target);
       }
 
-      function showToast(msg, type) {
+      function showToast(msg, type, action) {
         const container = document.getElementById('toast-container');
         if (!container) return;
         const el = document.createElement('div');
         const colors = type === 'error' ? 'bg-rose-600 text-white' : type === 'warn' ? 'bg-amber-600 text-white' : 'bg-slate-900 text-white';
-        el.className = `${colors} px-4 py-2.5 rounded-xl shadow-lg text-xs font-medium pointer-events-auto transition-all duration-300`;
-        el.textContent = msg;
+        el.className = `${colors} px-4 py-2.5 rounded-xl shadow-lg text-xs font-medium pointer-events-auto transition-all duration-300 flex items-center justify-between gap-3 max-w-[92vw] sm:max-w-md`;
+        const span = document.createElement('span');
+        span.className = 'leading-snug';
+        span.textContent = msg;
+        el.appendChild(span);
+        let dismissed = false;
+        const removeEl = () => {
+          if (dismissed) return;
+          dismissed = true;
+          el.style.opacity = '0';
+          setTimeout(() => el.remove(), 250);
+        };
+        if (action && action.label && typeof action.onClick === 'function') {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'px-2.5 py-1 rounded-lg bg-white/20 hover:bg-white/30 text-white font-bold text-[11px] shrink-0 transition';
+          btn.textContent = action.label;
+          btn.addEventListener('click', () => {
+            try { action.onClick(); } catch (e) {}
+            removeEl();
+          });
+          el.appendChild(btn);
+        }
         container.appendChild(el);
-        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2800);
+        const dur = (action && action.durationMs) ? action.durationMs : 2800;
+        setTimeout(removeEl, dur);
       }
 
       function openConfirmModal(title, desc, onConfirm) {
@@ -1592,11 +1629,160 @@
         }
         return out;
       }
+      // v2.5.4: Session-locked single TTS engine for Free Talk turn-based mode (prevents voice hopping mid-conversation!)
+      let ftLockedTtsProvider = null; // null | 'youdao' | 'polly' | 'google' | 'native' | 'webspeech'
+      let ftChunkPlayToken = 0;
+
+      function resetFreeTalkTtsLock() {
+        ftLockedTtsProvider = null;
+        ftChunkPlayToken += 1;
+      }
+
+      function splitJapaneseForStableTts(text) {
+        const s = String(text || '').trim();
+        if (s.length <= 75) return [s];
+        const parts = s.match(/[^。！？!?\n]+[。！？!?]?/g) || [s];
+        const merged = [];
+        let cur = '';
+        for (const p of parts) {
+          const piece = p.trim();
+          if (!piece) continue;
+          if (!cur) cur = piece;
+          else if ((cur + piece).length <= 75) cur += piece;
+          else { merged.push(cur); cur = piece; }
+        }
+        if (cur) merged.push(cur);
+        return merged.length ? merged : [s];
+      }
+
+      function buildFreeTalkProviderUrl(provider, text) {
+        const enc = encodeURIComponent(text);
+        if (provider === 'youdao') return 'https://dict.youdao.com/dictvoice?audio=' + enc + '&le=jap';
+        if (provider === 'polly') return 'https://api.streamelements.com/kappa/v2/speech?voice=Mizuki&text=' + enc;
+        if (provider === 'google') return 'https://translate.google.com/translate_tts?ie=UTF-8&tl=ja&client=tw-ob&q=' + enc;
+        return '';
+      }
+
+      function playSingleUrlWithTimeout(url, rate, timeoutMs, onOk, onFail) {
+        clearAudioWatchdog();
+        try {
+          if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+          }
+          const audio = document.createElement('audio');
+          audio.setAttribute('referrerpolicy', 'no-referrer');
+          audio.preload = 'auto';
+          audio.src = url;
+          audio.playbackRate = Math.min(1.5, Math.max(0.6, rate || 1.0));
+          currentAudio = audio;
+
+          let settled = false;
+          let started = false;
+          const okDone = () => {
+            if (settled) return;
+            settled = true;
+            clearAudioWatchdog();
+            if (onOk) onOk();
+          };
+          const failDone = () => {
+            if (settled) return;
+            settled = true;
+            clearAudioWatchdog();
+            try { audio.pause(); } catch (e) {}
+            if (onFail) onFail();
+          };
+          audio.onplaying = () => {
+            started = true;
+            clearAudioWatchdog();
+          };
+          audio.onended = okDone;
+          audio.onerror = failDone;
+          audioWatchdogId = setTimeout(() => {
+            if (!settled && !started && (audio.readyState < 2 || audio.paused)) failDone();
+          }, timeoutMs || 6500);
+
+          const p = audio.play();
+          if (p && typeof p.catch === 'function') p.catch(() => failDone());
+        } catch (e) {
+          if (onFail) onFail();
+        }
+      }
+
+      function speakFreeTalkConsistent(ttsText, rate, pitch, onEnd) {
+        const myToken = ++ftChunkPlayToken;
+        const chunks = splitJapaneseForStableTts(ttsText);
+        // Order candidates: locked provider first so EVERY turn uses the EXACT same voice!
+        const defaultOrder = isNativeCapacitor()
+          ? ['youdao', 'polly', 'native', 'google', 'webspeech']
+          : ['youdao', 'polly', 'google', 'webspeech'];
+        const order = ftLockedTtsProvider
+          ? [ftLockedTtsProvider, ...defaultOrder.filter((p) => p !== ftLockedTtsProvider)]
+          : defaultOrder;
+
+        function playChunkWithOrder(chunkIdx, providerIdx) {
+          if (myToken !== ftChunkPlayToken) return;
+          if (chunkIdx >= chunks.length) {
+            if (onEnd) onEnd();
+            return;
+          }
+          if (providerIdx >= order.length) {
+            setLastEngineLabel('재생 실패 (일본어 음성 확인)');
+            showToast('일본어 음성 재생에 실패했습니다. Gemini Live 또는 OpenAI 키를 연결하거나 기기 일본어 TTS를 확인해 주세요.', 'warn');
+            if (onEnd) onEnd();
+            return;
+          }
+          const provider = order[providerIdx];
+          const seg = chunks[chunkIdx];
+          const nextChunk = () => {
+            if (myToken !== ftChunkPlayToken) return;
+            ftLockedTtsProvider = provider;
+            const labelMap = {
+              youdao: '단일 고정 음성 (Youdao 일본어)',
+              polly: '단일 고정 음성 (Polly Mizuki)',
+              google: '단일 고정 음성 (Google 일본어)',
+              native: '단일 고정 음성 (안드로이드 일본어 TTS)',
+              webspeech: '단일 고정 음성 (브라우저 일본어 TTS)'
+            };
+            setLastEngineLabel(labelMap[provider] || provider);
+            if (chunkIdx + 1 < chunks.length) {
+              setTimeout(() => playChunkWithOrder(chunkIdx + 1, 0), 120);
+            } else if (onEnd) {
+              onEnd();
+            }
+          };
+          const tryNextProvider = () => {
+            if (myToken !== ftChunkPlayToken) return;
+            // Only unlock if the locked provider actually failed
+            if (ftLockedTtsProvider === provider) ftLockedTtsProvider = null;
+            playChunkWithOrder(chunkIdx, providerIdx + 1);
+          };
+
+          if (provider === 'native') {
+            if (!isNativeCapacitor()) { tryNextProvider(); return; }
+            speakViaNativeCapacitorTTS(seg, rate, pitch, nextChunk).then((ok) => {
+              if (!ok) tryNextProvider();
+            }).catch(() => tryNextProvider());
+            return;
+          }
+          if (provider === 'webspeech') {
+            if (!speakViaWebSpeech(seg, rate, pitch, nextChunk)) tryNextProvider();
+            return;
+          }
+          const url = buildFreeTalkProviderUrl(provider, seg);
+          if (!url) { tryNextProvider(); return; }
+          playSingleUrlWithTimeout(url, rate, 6500, nextChunk, tryNextProvider);
+        }
+
+        playChunkWithOrder(0, 0);
+      }
+
       function speakJapanese(text, rate, pitch, onEnd) {
         const cleanText = String(text || '').trim();
         if (!cleanText) { if (onEnd) onEnd(); return; }
         const ttsText = normalizeJpTts(cleanText);
 
+        ftChunkPlayToken += 1;
         clearAudioWatchdog();
         if (currentAudio) {
           try { currentAudio.pause(); currentAudio.currentTime = 0; } catch (e) {}
@@ -1620,7 +1806,10 @@
         // 1. OpenAI Natural Human Japanese Voice (gpt-4o-mini-tts) when OpenAI engine selected OR in Free Talk with saved OpenAI key
         if (oaiKey && (mode === 'openai' || (isFtSpeak && mode !== 'browser'))) {
           speakWithOpenAI(ttsText, rate, onEnd, { persona: ftPersona }).then((ok) => {
-            if (!ok) playAudioUrlWithFallback(onlineUrls, rate, effectivePitch, ttsText, onEnd, !isNativeCapacitor());
+            if (!ok) {
+              if (isFtSpeak) speakFreeTalkConsistent(ttsText, rate, effectivePitch, onEnd);
+              else playAudioUrlWithFallback(onlineUrls, rate, effectivePitch, ttsText, onEnd, !isNativeCapacitor());
+            }
           });
           return;
         }
@@ -1628,11 +1817,18 @@
         // 2. Explicit Browser Mode (ONLY if a verified ja-JP voice is actually installed!)
         if (mode === 'browser') {
           if (speakViaWebSpeech(ttsText, rate, effectivePitch, onEnd)) return;
-          playAudioUrlWithFallback(onlineUrls, rate, effectivePitch, ttsText, onEnd, false);
+          if (isFtSpeak) speakFreeTalkConsistent(ttsText, rate, effectivePitch, onEnd);
+          else playAudioUrlWithFallback(onlineUrls, rate, effectivePitch, ttsText, onEnd, false);
           return;
         }
 
-        // 3. Auto Mode: Always play bundled Microsoft Azure Neural Japanese MP3 (./audio/*.mp3) first, then online JP MP3, then verified ja-JP browser voice (zero Chinese fallback!)
+        // 3. Free Talk Turn-Based Single-Voice Lock: keep ONE consistent voice across opening + all replies!
+        if (isFtSpeak) {
+          speakFreeTalkConsistent(ttsText, rate, effectivePitch, onEnd);
+          return;
+        }
+
+        // 4. Curriculum Tabs (Vocab/Grammar/Listening/Scenario): bundled Azure Neural MP3 first, then fallback
         playAudioUrlWithFallback(onlineUrls, rate, effectivePitch, ttsText, onEnd, !isNativeCapacitor());
       }
 
@@ -1676,6 +1872,7 @@
       }
 
       function stopSpeech() {
+        ftChunkPlayToken += 1;
         listeningPlayQueueActive = false;
         currentListeningLine = -1;
         clearAudioWatchdog();
@@ -2299,7 +2496,7 @@
 
       function ensureChatInitialized() {
         const key = getActiveChatKey();
-        if (!state.chatByScenario[key] || state.chatByScenario[key].length === 0) {
+        if (!Array.isArray(state.chatByScenario[key])) {
           if (state.speakingMode === 'freetalk') {
             const isPolite = state.speakingRegister === 'polite';
             const open = isPolite
@@ -2313,6 +2510,83 @@
           }
           persistState();
         }
+      }
+
+      /* =========================================================================
+         v2.5.4 CHAT BUBBLE DELETE (Single Delete + Batch Select + 5-Second Undo)
+         ========================================================================= */
+      let chatSelectMode = false;
+      const selectedChatMsgKeys = new Set();
+      let lastDeletedChatUndo = null;
+
+      function getBubbleUid(m, idx) {
+        return String((m && m.id) ? m.id : ('idx_' + idx));
+      }
+
+      function exitChatSelectMode() {
+        chatSelectMode = false;
+        selectedChatMsgKeys.clear();
+      }
+
+      function syncChatSelectBarUI() {
+        const bar = document.getElementById('sp-chat-select-bar');
+        const cntEl = document.getElementById('sp-chat-select-count');
+        const delBtn = document.getElementById('btn-chat-delete-selected');
+        const toggleBtn = document.getElementById('btn-toggle-select-del');
+        if (bar) bar.classList.toggle('hidden', !chatSelectMode);
+        if (toggleBtn) {
+          toggleBtn.className = chatSelectMode
+            ? 'text-xs font-bold text-rose-600 inline-flex items-center gap-1 transition'
+            : 'text-xs font-semibold text-slate-500 hover:text-rose-600 inline-flex items-center gap-1 transition';
+        }
+        if (chatSelectMode) {
+          const n = selectedChatMsgKeys.size;
+          if (cntEl) cntEl.textContent = n > 0 ? `${n}개의 말풍선이 선택되었습니다` : '삭제할 말풍선을 터치해 선택하세요';
+          if (delBtn) {
+            delBtn.disabled = n === 0;
+            delBtn.textContent = n > 0 ? `선택한 ${n}개 삭제` : '선택 삭제';
+          }
+        }
+      }
+
+      function performChatBubbleDeletion(indicesToDelete) {
+        const chatKey = getActiveChatKey();
+        const list = state.chatByScenario[chatKey];
+        if (!Array.isArray(list) || !indicesToDelete.length) return;
+        const delSet = new Set(indicesToDelete);
+        const backupCopy = JSON.parse(JSON.stringify(list));
+        const nextList = list.filter((_, i) => !delSet.has(i));
+        const deletedCount = list.length - nextList.length;
+        if (deletedCount <= 0) return;
+
+        lastDeletedChatUndo = { chatKey, prevList: backupCopy };
+        state.chatByScenario[chatKey] = nextList;
+        exitChatSelectMode();
+        persistState();
+        renderSpeaking();
+        renderGlobalChrome();
+
+        const liveOn = !!(window.KotonohaAI && window.KotonohaAI.isLiveActive && window.KotonohaAI.isLiveActive());
+        const baseMsg = deletedCount === 1
+          ? '말풍선을 삭제했습니다.'
+          : `말풍선 ${deletedCount}개를 삭제했습니다.`;
+        const fullMsg = liveOn
+          ? `${baseMsg} (실시간 통화 서버 기억은 통화 재시작 시 반영)`
+          : baseMsg;
+
+        showToast(fullMsg, 'info', {
+          label: '실행 취소',
+          durationMs: 5200,
+          onClick: () => {
+            if (!lastDeletedChatUndo || lastDeletedChatUndo.chatKey !== chatKey) return;
+            state.chatByScenario[chatKey] = lastDeletedChatUndo.prevList;
+            lastDeletedChatUndo = null;
+            persistState();
+            renderSpeaking();
+            renderGlobalChrome();
+            showToast('삭제한 말풍선을 복원했습니다!', 'info');
+          }
+        });
       }
 
       function renderPersonaPickerGrid() {
@@ -2437,11 +2711,17 @@
             : '일본어로 말하거나 입력…';
         }
 
+        syncChatSelectBarUI();
         const chatBox = document.getElementById('chat-messages');
-        chatBox.innerHTML = history.map((m, idx) => {
-          const msgKey = chatKey + ':' + (m.id || idx);
+        chatBox.innerHTML = history.length ? history.map((m, idx) => {
+          const uid = getBubbleUid(m, idx);
+          const msgKey = chatKey + ':' + uid;
+          const isSelected = chatSelectMode && selectedChatMsgKeys.has(uid);
           const koVisible = showKo || revealedKoKeys.has(msgKey);
           const hasKo = !!(m.ko && String(m.ko).trim());
+          const chkHtml = chatSelectMode
+            ? `<button type="button" data-chat-select="${escapeChatHtml(uid)}" aria-label="말풍선 선택" class="w-5 h-5 mt-1.5 rounded-md border flex items-center justify-center text-[11px] font-bold shrink-0 transition ${isSelected ? 'bg-rose-600 border-rose-600 text-white' : 'bg-white border-slate-300 text-transparent hover:border-rose-400'}">✓</button>`
+            : '';
 
           if (m.sender === 'ai') {
             const koBlock = hasKo
@@ -2450,15 +2730,17 @@
                   : `<button type="button" data-peek-ko="${escapeChatHtml(msgKey)}" data-peek-idx="${idx}" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-brand-700 hover:border-brand-300 transition">👁️ 한국어 뜻 보기</button>`)
               : (m.pendingKo ? `<div class="text-[11px] text-slate-400 italic">한국어 번역 중…</div>` : '');
             return `
-              <div class="flex items-start gap-2.5 max-w-[88%]">
+              <div ${chatSelectMode ? `data-chat-select="${escapeChatHtml(uid)}"` : ''} class="flex items-start gap-2.5 max-w-[92%] sm:max-w-[88%] ${chatSelectMode ? 'cursor-pointer rounded-2xl p-1 -m-1 ' + (isSelected ? 'bg-rose-50/80 ring-1 ring-rose-300' : 'hover:bg-slate-50') : ''}">
+                ${chkHtml}
                 <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-800 flex items-center justify-center text-xs font-bold shrink-0">AI</div>
-                <div class="bg-surface-bg border border-surface-border rounded-2xl rounded-tl-sm px-4 py-3 space-y-1.5">
-                  <div class="text-sm font-jp font-medium text-slate-900 leading-relaxed">${escapeChatHtml(m.jp)}${m.streaming ? ' <span class="inline-block w-1.5 h-3.5 bg-brand-500 animate-pulse align-middle ml-0.5"></span>' : ''}</div>
+                <div class="bg-surface-bg border border-surface-border rounded-2xl rounded-tl-sm px-4 py-3 space-y-1.5 min-w-0">
+                  <div class="text-sm font-jp font-medium text-slate-900 leading-relaxed break-words">${escapeChatHtml(m.jp)}${m.streaming ? ' <span class="inline-block w-1.5 h-3.5 bg-brand-500 animate-pulse align-middle ml-0.5"></span>' : ''}</div>
                   ${koBlock}
-                  <div class="pt-0.5">
+                  <div class="pt-0.5 flex items-center justify-between gap-3">
                     <button type="button" data-chat-tts="${idx}" class="text-[11px] text-brand-700 hover:underline inline-flex items-center gap-1">
                       <i data-lucide="volume-2" class="w-3 h-3"></i> 다시 듣기
                     </button>
+                    ${!chatSelectMode ? `<button type="button" data-chat-del="${idx}" title="이 말풍선 삭제" class="text-[11px] text-slate-400 hover:text-rose-600 inline-flex items-center gap-0.5 transition"><i data-lucide="trash-2" class="w-3 h-3"></i> 삭제</button>` : ''}
                   </div>
                 </div>
               </div>
@@ -2474,16 +2756,18 @@
             : (m.pendingKo ? `<div class="text-[11px] text-brand-100/80 italic">자동 번역 중…</div>` : '');
 
           return `
-            <div class="flex justify-end">
-              <div class="max-w-[85%] bg-brand-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 space-y-1 shadow-xs">
-                <div class="text-sm font-jp leading-relaxed">${escapeChatHtml(m.jp)}</div>
+            <div ${chatSelectMode ? `data-chat-select="${escapeChatHtml(uid)}"` : ''} class="flex items-start justify-end gap-2 ${chatSelectMode ? 'cursor-pointer rounded-2xl p-1 -m-1 ' + (isSelected ? 'bg-rose-50/80 ring-1 ring-rose-300' : 'hover:bg-slate-50') : ''}">
+              ${chkHtml}
+              <div class="max-w-[85%] bg-brand-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 space-y-1 shadow-xs min-w-0">
+                <div class="text-sm font-jp leading-relaxed break-words">${escapeChatHtml(m.jp)}</div>
                 ${userKoBlock}
                 ${m.tip ? `<div class="text-[11px] text-amber-100 bg-brand-700/60 rounded-xl px-2.5 py-1.5 mt-1 leading-relaxed">💡 ${escapeChatHtml(m.tip)}</div>` : ''}
+                ${!chatSelectMode ? `<div class="pt-0.5 flex justify-end"><button type="button" data-chat-del="${idx}" title="이 말풍선 삭제" class="text-[10px] text-brand-100/80 hover:text-white inline-flex items-center gap-0.5 transition"><i data-lucide="trash-2" class="w-3 h-3"></i> 삭제</button></div>` : ''}
               </div>
             </div>
           `;
-        }).join('');
-        chatBox.scrollTop = chatBox.scrollHeight;
+        }).join('') : '<div class="h-full flex flex-col items-center justify-center text-center text-xs text-slate-400 py-10 space-y-1.5"><div>대화 내역이 비어 있습니다.</div><div>아래 버튼을 눌러 새 대화를 시작하거나 [대화 처음부터 다시하기]를 눌러 보세요.</div></div>';
+        if (!chatSelectMode) chatBox.scrollTop = chatBox.scrollHeight;
 
         const callDockEl = document.getElementById('sp-freetalk-call-dock');
         const quickEl = document.getElementById('sp-quick-replies');
@@ -3692,6 +3976,22 @@
           const btn = e.target.closest('[data-quick-reply]'); if (btn) sendChatMessage(btn.dataset.quickReply);
         });
         document.getElementById('chat-messages').addEventListener('click', (e) => {
+          if (chatSelectMode) {
+            const selTarget = e.target.closest('[data-chat-select]');
+            if (selTarget) {
+              const uid = selTarget.dataset.chatSelect;
+              if (selectedChatMsgKeys.has(uid)) selectedChatMsgKeys.delete(uid);
+              else selectedChatMsgKeys.add(uid);
+              renderSpeaking();
+            }
+            return;
+          }
+          const delBtn = e.target.closest('[data-chat-del]');
+          if (delBtn) {
+            const dIdx = parseInt(delBtn.dataset.chatDel, 10);
+            if (!isNaN(dIdx)) performChatBubbleDeletion([dIdx]);
+            return;
+          }
           const peekBtn = e.target.closest('[data-peek-ko]');
           if (peekBtn) {
             revealedKoKeys.add(peekBtn.dataset.peekKo);
@@ -3737,6 +4037,7 @@
             const wasActive = !!(window.KotonohaAI && window.KotonohaAI.isLiveActive && window.KotonohaAI.isLiveActive()) || ftVadActive;
             if (wasActive) stopFreeTalkHandsFree(true);
             state.freeTalkPersonaId = pid;
+            resetFreeTalkTtsLock();
             persistState();
             pickDrawer.classList.add('hidden');
             renderSpeaking();
@@ -3773,6 +4074,7 @@
         document.getElementById('btn-sp-mode-scenario').addEventListener('click', () => {
           if (state.speakingMode === 'scenario') return;
           stopFreeTalkHandsFree(true);
+          exitChatSelectMode();
           state.speakingMode = 'scenario';
           persistState();
           if (window.KotonohaAI && window.KotonohaAI.onSpeakingModeChange) window.KotonohaAI.onSpeakingModeChange('scenario');
@@ -3782,6 +4084,7 @@
         });
         document.getElementById('btn-sp-mode-freetalk').addEventListener('click', () => {
           if (state.speakingMode === 'freetalk') return;
+          exitChatSelectMode();
           state.speakingMode = 'freetalk';
           persistState();
           if (window.KotonohaAI && window.KotonohaAI.onSpeakingModeChange) window.KotonohaAI.onSpeakingModeChange('freetalk');
@@ -3934,10 +4237,37 @@
           } catch (err) { showToast('마이크를 시작할 수 없습니다. 텍스트 입력을 이용해 주세요', 'warn'); }
         });
 
+        document.getElementById('btn-toggle-select-del').addEventListener('click', () => {
+          chatSelectMode = !chatSelectMode;
+          selectedChatMsgKeys.clear();
+          renderSpeaking();
+        });
+        document.getElementById('btn-chat-select-cancel').addEventListener('click', () => {
+          exitChatSelectMode();
+          renderSpeaking();
+        });
+        document.getElementById('btn-chat-select-all').addEventListener('click', () => {
+          const list = state.chatByScenario[getActiveChatKey()] || [];
+          const allSelected = list.length > 0 && list.every((m, i) => selectedChatMsgKeys.has(getBubbleUid(m, i)));
+          selectedChatMsgKeys.clear();
+          if (!allSelected) list.forEach((m, i) => selectedChatMsgKeys.add(getBubbleUid(m, i)));
+          renderSpeaking();
+        });
+        document.getElementById('btn-chat-delete-selected').addEventListener('click', () => {
+          const list = state.chatByScenario[getActiveChatKey()] || [];
+          const indices = [];
+          list.forEach((m, i) => {
+            if (selectedChatMsgKeys.has(getBubbleUid(m, i))) indices.push(i);
+          });
+          performChatBubbleDeletion(indices);
+        });
+
         document.getElementById('btn-reset-chat').addEventListener('click', () => {
           const key = getActiveChatKey();
-          state.chatByScenario[key] = [];
+          delete state.chatByScenario[key];
           revealedKoKeys.clear();
+          exitChatSelectMode();
+          resetFreeTalkTtsLock();
           persistState();
           document.getElementById('review-report-panel').classList.add('hidden');
           renderSpeaking(); showToast('현재 대화방을 처음부터 다시 시작했습니다', 'info');
@@ -4098,10 +4428,11 @@
         });
         document.getElementById('voice-engine-select').addEventListener('change', (e) => {
           state.voiceEngine = e.target.value;
+          resetFreeTalkTtsLock();
           persistState();
         });
         document.getElementById('btn-ota-refresh').addEventListener('click', async () => {
-          showToast('최신 버전을 확인하고 캐시를 갱신하는 중…', 'info');
+          showToast('최신 버전을 확인하고 캐시·서비스워커를 초기화하는 중…', 'info');
           try {
             if ('caches' in window) {
               const keys = await caches.keys();
@@ -4109,11 +4440,12 @@
             }
             if ('serviceWorker' in navigator) {
               const regs = await navigator.serviceWorker.getRegistrations();
-              await Promise.all(regs.map((r) => r.update().catch(() => {})));
+              await Promise.all(regs.map((r) => r.unregister().catch(() => {})));
             }
+            await fetch('./index.html?nocache=' + Date.now(), { cache: 'no-store' }).catch(() => {});
           } catch (e) {}
-          const base = window.location.href.split('?')[0];
-          window.location.replace(base + '?v=' + Date.now());
+          const base = window.location.href.split('?')[0].split('#')[0];
+          window.location.replace(base + '?v=2.5.4_' + Date.now());
         });
 
         document.getElementById('btn-test-jp-voice').addEventListener('click', () => {
@@ -4293,12 +4625,12 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./sw.js').catch(function () {});
+        navigator.serviceWorker.register('./sw.js?v=2.5.4').catch(function () {});
       });
     }
   </script>
-  <script src="./learning-memory.js"></script>
-  <script src="./scene-images.js"></script>
-  <script src="./ai-engine.js"></script>
+  <script src="./learning-memory.js?v=2.5.4"></script>
+  <script src="./scene-images.js?v=2.5.4"></script>
+  <script src="./ai-engine.js?v=2.5.4"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = 'v2.5.3 · 31일판(모바일최적화·8인파트너·핸즈프리)';
+  const APP_VERSION = 'v2.5.4 · 31일판(음성고정·말풍선삭제·OTA개선)';
   const VAULT_STORAGE_KEY = 'kotonoha_ai_vault_v1';
   const PREFS_STORAGE_KEY = 'kotonoha_prefs_v1';
   const REMINDER_NOTIF_ID = 20261125;
@@ -471,7 +471,8 @@
         '3. 学習者が言葉に詰まって韓国語や中国語で話しかけても、意味を温かく理解して必ず自然な日本語で会話を続けてください。',
         '4. ' + lenRule,
         '5. ' + speedRule,
-        '6. 学習者が途中で話し始めたらすぐ聞いて自然に対応してください。'
+        '6. 学習者が途中で話し始めたらすぐ聞いて自然に対応してください。',
+        `7. 【声色・性別・トーン厳守】セッション開始時から最後まで、必ず「${pName}（${persona && persona.gender === 'male' ? '男性' : '女性'}・${persona ? persona.age : '20대'}）」の同一人物の声質・性別・音程・話し方を一貫して維持してください。会話が長くなったり、割り込みや韓国語・中国語の入力があっても、途中で声色や性別を変えないでください。`
       ].join('\n');
     }
 
@@ -936,8 +937,13 @@
     // Note: Keep pinnedProfileId untouched so user's primary pin stays preserved for next restart!
     renderAllAIViews();
     const bName = vaultData.backupApi.name || '예비 API';
-    setLiveStatusUI('idle', `🛡️ 자동 전환됨 · ${bName} (${vaultData.backupApi.model}) 사용 중`);
-    toast(`⚠️ 주 API 오류(${reasonText}) → 예비 API「${bName}」로 자동 전환했습니다! 계속 대화하세요.`, 'warn');
+    const failNotice = `🛡️ 주 API 오류 → 예비 API「${bName}」로 전환됨 (목소리가 턴제 음성으로 변경됨)`;
+    setLiveStatusUI('idle', failNotice);
+    const b = bridge();
+    if (b && b.syncFreeTalkLiveUI) {
+      b.syncFreeTalkLiveUI({ active: false, muted: false, mode: 'idle', status: failNotice });
+    }
+    toast(`⚠️ 주 API 오류(${reasonText}) → 예비 API「${bName}」로 자동 전환되어 턴제 음성으로 이어갑니다.`, 'warn');
     return true;
   }
 
@@ -1987,7 +1993,7 @@
       setBadge('hub-badge-voice', veMap[st.voiceEngine] || '자동', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
     }
 
-    setBadge('hub-badge-data', 'v2.5.3 · 백업/복원', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
+    setBadge('hub-badge-data', 'v2.5.4 · 백업/복원', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
   }
 
   // ---------- Vault Card & Backup Failover Card Rendering ----------
@@ -2563,7 +2569,7 @@
             </div>
           </div>
           <div class="flex items-center gap-1 sm:gap-2 shrink-0 max-w-[44%] sm:max-w-none">
-            <span id="hub-badge-data" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">v2.5.3</span>
+            <span id="hub-badge-data" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">v2.5.4</span>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
           </div>
         </button>
@@ -2669,6 +2675,7 @@
                   <button type="button" data-live-model="gemini-3.1-flash-live-preview" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 hover:border-brand-400">3.1 Flash Live (추천)</button>
                   <button type="button" data-live-model="gemini-2.5-flash-native-audio-preview-12-2025" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 hover:border-brand-400">2.5 Flash Native Audio</button>
                   <button type="button" data-live-model="gemini-3.8-live" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 hover:border-brand-400">3.8 Live</button>
+                  <span class="w-full text-[10px] text-slate-500 mt-0.5">💡 장시간 통화 중 목소리 톤이 흔들리면 <strong>2.5 Flash Native Audio</strong> 모델로 바꿔 비교해 보세요.</span>
                 </div>
                 <label class="inline-flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
                   <input id="vf-lang-hint" type="checkbox" class="rounded border-slate-300" />
