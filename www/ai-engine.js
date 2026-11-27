@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const APP_VERSION = 'v2.5.1 · 31일판(핸즈프리 통화·교재93세트·1,100어휘)';
+  const APP_VERSION = 'v2.5.2 · 31일판(모바일최적화·8인파트너·핸즈프리)';
   const VAULT_STORAGE_KEY = 'kotonoha_ai_vault_v1';
   const PREFS_STORAGE_KEY = 'kotonoha_prefs_v1';
   const REMINDER_NOTIF_ID = 20261125;
@@ -454,19 +454,24 @@
         : '学習者が聞き取りやすい標準的なスピードで自然に話してください。';
 
     if (isFree) {
+      const persona = (b && b.getFreeTalkPersona) ? b.getFreeTalkPersona() : null;
+      const pName = persona ? persona.nameJp : 'ハルカ';
+      const pTrait = persona ? persona.jpTrait : '東京の明るい会話パートナー。';
       const topicLine = st.freeTalkTopic
         ? `希望テーマ: ${st.freeTalkTopic}（ただし学習者が別の話題を出したら自然に合わせてください）`
         : 'テーマ: 制限なし（どんな話題でも自由に楽しく会話してください）';
       return [
-        'あなたは日本語学習アプリ「コトノハ」の自由フリートーク会話パートナー「ハルカ」です。',
+        `あなたは日本語学習アプリ「コトノハ」の自由フリートーク会話パートナー「${pName}」です。`,
+        `キャラクター設定: ${pTrait}`,
         topicLine,
         `話し方: ${regRule}`,
-        'ルール:',
-        '1. 必ず自然な日本語（ja-JP）のみで話してください。韓国語や中国語・英語で読み上げないでください。',
-        '2. 学習者が言葉に詰まって韓国語や中国語で話しかけても、意味を温かく理解して必ず自然な日本語で会話を続けてください。',
-        '3. ' + lenRule,
-        '4. ' + speedRule,
-        '5. 学習者が途中で話し始めたらすぐ聞いて対応してください。'
+        '人間らしい自然な発話ルール（重要）:',
+        '1. AIや教科書のような硬い読み上げ調は絶対に避け、実在の日本人がカフェで対面会話しているような温かい声の抑揚・自然な間・相槌（「うんうん」「なるほど〜」「へえ〜」「そうなんですね！」など）を自然に入れてください。',
+        '2. 必ず自然な日本語（ja-JP）のみで話してください。韓国語や中国語・英語で読み上げたり、箇条書きのような話し方をしないでください。',
+        '3. 学習者が言葉に詰まって韓国語や中国語で話しかけても、意味を温かく理解して必ず自然な日本語で会話を続けてください。',
+        '4. ' + lenRule,
+        '5. ' + speedRule,
+        '6. 学習者が途中で話し始めたらすぐ聞いて自然に対応してください。'
       ].join('\n');
     }
 
@@ -505,8 +510,9 @@
         ? '일본어 응답(jp)은 2~3문장으로 자연스럽고 풍부하게 작성하세요.'
         : '일본어 응답(jp)은 1~2문장으로 간결하게 작성하고 대화가 이어지도록 질문하세요.';
 
+    const ftPersona = (isFree && b && b.getFreeTalkPersona) ? b.getFreeTalkPersona() : null;
     const contextDesc = isFree
-      ? `모드: 자유 프리토킹 (주제 제한 없음${st.freeTalkTopic ? ' · 현재 관심 주제: ' + st.freeTalkTopic : ''})\n역할: 친절한 일본인 회화 파트너 하루카`
+      ? `모드: 자유 프리토킹 (주제 제한 없음${st.freeTalkTopic ? ' · 현재 관심 주제: ' + st.freeTalkTopic : ''})\n역할: ${ftPersona ? `${ftPersona.nameJp}(${ftPersona.age} · ${ftPersona.roleKo}) — ${ftPersona.jpTrait}` : '친절한 일본인 회화 파트너 하루카'}\n말투 지침: 교과서식 딱딱한 문장을 피하고 실제 일본인이 대화하듯 자연스러운 맞장구(「うんうん」「なるほど〜」「そうなんですね」 등)와 구어체 리듬을 살려 답하세요.`
       : (sc
           ? `모드: 상황별 미션\n역할: ${sc.partnerName}\n상황: ${sc.title} (${sc.level})\n학습자 미션: ${sc.mission}\n권장 표현: ${(sc.targetKeys || []).join(', ')}`
           : '역할: 일본어 회화 파트너');
@@ -1035,7 +1041,10 @@
               responseModalities: ['AUDIO'],
               speechConfig: {
                 voiceConfig: {
-                  prebuiltVoiceConfig: { voiceName: profile.voiceName || 'Kore' }
+                  prebuiltVoiceConfig: {
+                    voiceName: (isFreeTalkMode() && bridge() && bridge().getFreeTalkPersona && bridge().getFreeTalkPersona().liveVoice)
+                      || profile.voiceName || 'Kore'
+                  }
                 }
               }
             },
@@ -1941,7 +1950,7 @@
       const el = document.getElementById(id);
       if (!el) return;
       el.textContent = text;
-      if (cls) el.className = cls;
+      if (cls) el.className = cls + ' max-w-[112px] sm:max-w-[190px] truncate inline-block';
     };
 
     if (!hasPw || !vaultUnlocked) {
@@ -1978,7 +1987,7 @@
       setBadge('hub-badge-voice', veMap[st.voiceEngine] || '자동', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
     }
 
-    setBadge('hub-badge-data', 'v2.5.1 · 백업/복원', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
+    setBadge('hub-badge-data', 'v2.5.2 · 백업/복원', 'text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600 border border-surface-border');
   }
 
   // ---------- Vault Card & Backup Failover Card Rendering ----------
@@ -2112,20 +2121,20 @@
 
       items.push(`
         <div class="p-3 rounded-2xl border ${isAct ? 'border-brand-500 bg-brand-50/60' : 'border-slate-200 bg-white'} space-y-2">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="space-y-0.5 min-w-0">
+          <div class="flex flex-wrap items-center justify-between gap-2.5 min-w-0">
+            <div class="space-y-0.5 min-w-0 w-full sm:flex-1">
               <div class="flex flex-wrap items-center gap-1.5">
-                <span class="text-xs font-bold text-slate-900">${escapeHtml(p.name)}</span>
+                <span class="text-xs font-bold text-slate-900 break-words">${escapeHtml(p.name)}</span>
                 ${badge}
                 ${pinChip}
                 ${keyState}
               </div>
-              <div class="text-[11px] text-slate-500 truncate">
-                모델: <code>${escapeHtml(p.model || '-')}</code>
+              <div class="text-[11px] text-slate-500 truncate max-w-full">
+                모델: <code class="break-all">${escapeHtml(p.model || '-')}</code>
                 ${p.type === 'gemini-live' ? ` · 목소리: ${escapeHtml(p.voiceName || 'Kore')}` : ` · 주소: ${escapeHtml(p.baseUrl || '-')}`}
               </div>
             </div>
-            <div class="flex flex-wrap items-center gap-1.5 shrink-0">
+            <div class="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
               <button type="button" data-ai-use="${escapeHtml(p.id)}" class="px-3 py-1.5 rounded-xl text-xs font-semibold ${isAct ? 'bg-brand-600 text-white' : 'bg-brand-50 text-brand-800 hover:bg-brand-100'}">
                 ${isAct ? '✓ 사용 중' : '선택'}
               </button>
@@ -2461,100 +2470,100 @@
           <p class="text-xs text-slate-500 mt-0.5">원하는 항목을 눌러 세부 설정을 변경하세요.</p>
         </div>
 
-        <button type="button" data-open-spage="ai" class="w-full p-3.5 rounded-2xl border border-brand-200 bg-brand-50/40 hover:bg-brand-50 flex items-center justify-between gap-3 text-left transition">
-          <div class="flex items-center gap-3 min-w-0">
+        <button type="button" data-open-spage="ai" class="w-full p-3 sm:p-3.5 rounded-2xl border border-brand-200 bg-brand-50/40 hover:bg-brand-50 flex items-center justify-between gap-2 text-left transition">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
             <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shrink-0"><i data-lucide="sparkles" class="w-5 h-5"></i></div>
             <div class="min-w-0">
-              <div class="text-sm font-bold text-slate-900">AI · API 설정</div>
+              <div class="text-[13px] sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">AI · API 설정</div>
               <div class="text-xs text-slate-500 truncate">주 API 고정·잠금 · 🛡️ 예비 API 자동 전환 · Gemini Live 스타일</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1 sm:gap-2 shrink-0 max-w-[44%] sm:max-w-none">
             <span id="hub-badge-ai" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700">확인 중</span>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
           </div>
         </button>
 
-        <button type="button" data-open-spage="security" class="w-full p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-3 text-left transition">
-          <div class="flex items-center gap-3 min-w-0">
+        <button type="button" data-open-spage="security" class="w-full p-3 sm:p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-2 text-left transition">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
             <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0"><i data-lucide="shield-check" class="w-5 h-5"></i></div>
             <div class="min-w-0">
-              <div class="text-sm font-bold text-slate-900">보안 및 비밀번호</div>
+              <div class="text-[13px] sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">보안 및 비밀번호</div>
               <div class="text-xs text-slate-500 truncate">앱 비밀번호 등록·변경 · 지금 잠그기 · 자동 잠금</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1 sm:gap-2 shrink-0 max-w-[44%] sm:max-w-none">
             <span id="hub-badge-security" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-brand-50 text-brand-700">확인 중</span>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
           </div>
         </button>
 
-        <button type="button" data-open-spage="display" class="w-full p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-3 text-left transition">
-          <div class="flex items-center gap-3 min-w-0">
+        <button type="button" data-open-spage="display" class="w-full p-3 sm:p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-2 text-left transition">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
             <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center shrink-0"><i data-lucide="moon" class="w-5 h-5"></i></div>
             <div class="min-w-0">
-              <div class="text-sm font-bold text-slate-900">화면 · 보기 설정</div>
+              <div class="text-[13px] sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">화면 · 보기 설정</div>
               <div class="text-xs text-slate-500 truncate">다크 모드 · 글자 크기 · 에피소드별 상황 그림 변경</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1 sm:gap-2 shrink-0 max-w-[44%] sm:max-w-none">
             <span id="hub-badge-display" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">라이트</span>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
           </div>
         </button>
 
-        <button type="button" data-open-spage="learning" class="w-full p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-3 text-left transition">
-          <div class="flex items-center gap-3 min-w-0">
+        <button type="button" data-open-spage="learning" class="w-full p-3 sm:p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-2 text-left transition">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
             <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center shrink-0"><i data-lucide="sliders-horizontal" class="w-5 h-5"></i></div>
             <div class="min-w-0">
-              <div class="text-sm font-bold text-slate-900">학습 기본값</div>
+              <div class="text-[13px] sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">학습 기본값</div>
               <div class="text-xs text-slate-500 truncate">닉네임 · 일일 목표 · 기본 말투(존댓말/반말) · 후리가나/해석</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1 sm:gap-2 shrink-0 max-w-[44%] sm:max-w-none">
             <span id="hub-badge-learning" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">기본값</span>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
           </div>
         </button>
 
-        <button type="button" data-open-spage="reminder" class="w-full p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-3 text-left transition">
-          <div class="flex items-center gap-3 min-w-0">
+        <button type="button" data-open-spage="reminder" class="w-full p-3 sm:p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-2 text-left transition">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
             <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center shrink-0"><i data-lucide="bell" class="w-5 h-5"></i></div>
             <div class="min-w-0">
-              <div class="text-sm font-bold text-slate-900">일일 학습 알림 (리마인더)</div>
+              <div class="text-[13px] sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">일일 학습 알림 (리마인더)</div>
               <div class="text-xs text-slate-500 truncate">매일 지정 시각 알림 예약 · 테스트 알림</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1 sm:gap-2 shrink-0 max-w-[44%] sm:max-w-none">
             <span id="hub-badge-reminder" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-500">꺼짐</span>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
           </div>
         </button>
 
-        <button type="button" data-open-spage="voice" class="w-full p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-3 text-left transition">
-          <div class="flex items-center gap-3 min-w-0">
+        <button type="button" data-open-spage="voice" class="w-full p-3 sm:p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-2 text-left transition">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
             <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 border border-sky-100 flex items-center justify-center shrink-0"><i data-lucide="mic" class="w-5 h-5"></i></div>
             <div class="min-w-0">
-              <div class="text-sm font-bold text-slate-900">음성 · 마이크 진단</div>
+              <div class="text-[13px] sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">음성 · 마이크 진단</div>
               <div class="text-xs text-slate-500 truncate">일본어 원어민 음성 테스트 · 마이크 3초 테스트 · 음성 엔진</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1 sm:gap-2 shrink-0 max-w-[44%] sm:max-w-none">
             <span id="hub-badge-voice" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">Azure 내장</span>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
           </div>
         </button>
 
-        <button type="button" data-open-spage="data" class="w-full p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-3 text-left transition">
-          <div class="flex items-center gap-3 min-w-0">
+        <button type="button" data-open-spage="data" class="w-full p-3 sm:p-3.5 rounded-2xl border border-surface-border bg-white hover:bg-slate-50 flex items-center justify-between gap-2 text-left transition">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
             <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-700 border border-rose-100 flex items-center justify-center shrink-0"><i data-lucide="database" class="w-5 h-5"></i></div>
             <div class="min-w-0">
-              <div class="text-sm font-bold text-slate-900">데이터 · 캐시 · 앱 정보</div>
+              <div class="text-[13px] sm:text-sm font-bold text-slate-900 whitespace-nowrap truncate">데이터 · 캐시 · 앱 정보</div>
               <div class="text-xs text-slate-500 truncate">JSON 백업/복원 · OTA 업데이트 · 캐시만 비우기 · 앱 정보</div>
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <span id="hub-badge-data" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">v2.5.1</span>
+          <div class="flex items-center gap-1 sm:gap-2 shrink-0 max-w-[44%] sm:max-w-none">
+            <span id="hub-badge-data" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-bg text-slate-600">v2.5.2</span>
             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
           </div>
         </button>
@@ -2650,6 +2659,7 @@
                   <option value="Leda">Leda (밝은 여성)</option>
                   <option value="Zephyr">Zephyr (경쾌한 중성)</option>
                   <option value="Puck">Puck (친근한 남성)</option>
+                  <option value="Orus">Orus (단정한 남성)</option>
                   <option value="Charon">Charon (낮은 남성)</option>
                   <option value="Fenrir">Fenrir (또렷한 남성)</option>
                 </select>
@@ -3350,15 +3360,36 @@
       const anyOai = vaultData.profiles.find((x) => x.type === 'openai-compat' && x.apiKey && /api\.openai\.com/i.test(x.baseUrl || ''));
       return anyOai ? anyOai.apiKey.trim() : '';
     },
+    activateSavedGeminiLive: async () => {
+      if (!vaultUnlocked || !vaultData || !Array.isArray(vaultData.profiles)) {
+        toast('먼저 ⚙️ 설정에서 Gemini API 키를 등록해 주세요.', 'warn');
+        openSettingsPage('ai');
+        return false;
+      }
+      const readyLive = vaultData.profiles.find((x) => x.type === 'gemini-live' && isProfileReady(x));
+      if (!readyLive) {
+        toast('키가 저장된 Gemini Live 프로필이 없습니다. ⚙️ AI 설정에서 키를 입력해 주세요.', 'warn');
+        openSettingsPage('ai');
+        return false;
+      }
+      stopLiveSession(true);
+      vaultData.activeProfileId = readyLive.id;
+      try { await persistVault(); } catch (e) {}
+      renderAllAIViews();
+      toast(`⚡ 「${readyLive.name}」 사람 목소리 실시간 모드로 전환했습니다! 이제 [📞 실시간 대화 시작]을 누르세요.`, 'info');
+      return true;
+    },
     getEngineSummary: () => {
       const p = getActiveProfile();
       const unlocked = !!vaultUnlocked;
       const ready = !!(unlocked && p && isProfileReady(p));
+      const hasSavedLiveProfile = !!(unlocked && vaultData && Array.isArray(vaultData.profiles) && vaultData.profiles.some((x) => x.type === 'gemini-live' && isProfileReady(x)));
       return {
         type: p ? p.type : 'builtin',
         name: p ? p.name : '내장 기본 모드',
         liveReady: !!(ready && p && p.type === 'gemini-live'),
         compatReady: !!(ready && p && p.type === 'openai-compat'),
+        hasSavedLiveProfile,
         unlocked
       };
     }
